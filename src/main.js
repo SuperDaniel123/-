@@ -9,9 +9,33 @@ import 'swiper/dist/css/swiper.css'
 import '@/common/js/axios'
 import store from './store'
 Vue.config.productionTip = false
-import { Button,Swipe, SwipeItem,Tab,Tabs,List,Toast} from 'vant';
-Vue.use(Button).use(Swipe).use(SwipeItem).use(Tab).use(Tabs).use(List).use(Toast)
+import { 
+  Button,
+  Swipe, 
+  SwipeItem,
+  Tab,
+  Tabs,
+  List,
+  Toast,
+  GoodsAction,
+  GoodsActionBigBtn,
+  GoodsActionMiniBtn,
+  Checkbox, 
+  CheckboxGroup,
+  Area,
+  Popup,
+  Switch,
+  Cell, 
+  CellGroup,
+  Card
+} from 'vant';
 
+Vue.use(Button).use(Swipe)
+.use(SwipeItem).use(Tab).use(Tabs)
+.use(List).use(Toast).use(GoodsAction)
+.use(GoodsActionBigBtn).use(GoodsActionMiniBtn)
+.use(Checkbox).use(CheckboxGroup).use(Area).use(Popup)
+.use(Switch).use(CellGroup).use(Cell).use(Card)
 
 /* eslint-disable no-new */
 new Vue({

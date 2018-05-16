@@ -3,7 +3,7 @@
         <div :class="bannerClass()">
             <div class="searchGone">
                 <div class="circle"><i class="fa fa-search "></i>输入你想搜索的...</div>
-                <div class="shopCart"><i class="fa fa-shopping-cart"></i></div>
+                <router-link class="shopCart" to="/shoppingCart"><i class="fa fa-shopping-cart"></i></router-link>
             </div>
             <ul class="i-nav">
                 <li v-for="(item,index) in navList" :key="index" @click="cutPage(index)">
@@ -123,6 +123,7 @@ export default {
             }
         }
         .shopCart{
+            display:inline-block;
             width:30px;
             margin:5px 0;
             height:30px;

@@ -30,10 +30,27 @@
                 </div>
             </div>
             <div class="e-line"></div>
-            <div class="genre">
-                
+            <ul class="genre">
+                <li><b>类别：</b>汽车外饰</li>
+                <li><b>服务：</b><span><i></i>包邮</span><span><i></i>爱车屋自营</span></li>
+            </ul>
+            <div class="e-line"></div>
+            <router-link to="/comment" class="comment">
+                用户评论（0）
+                <span>0%好评<i class="fa fa-angle-right"></i></span>
+            </router-link>
+            <div class="e-line"></div>
+            <div class="imgList">
+                <h2 class="title">商品详情</h2>
+                <img src="../common/images/banner.jpg" />
             </div>
-            
+            <div style="height:50px;"></div>
+            <van-goods-action>
+                <van-goods-action-mini-btn icon="chat" text="客服" />
+                <van-goods-action-mini-btn icon="like-o" text="收藏"  />
+                <van-goods-action-big-btn text="加入购物车"  />
+                <van-goods-action-big-btn text="立即购买" primary />
+            </van-goods-action>
         </div>
     </div>
 
@@ -188,5 +205,62 @@ export default {
         }
     }
     
+}
+.genre{
+    li{
+        line-height: 3rem;
+        font-size:12px;
+        margin-left:0.5rem;
+        .bottomRim;
+        color:@font-Sgray;
+        b{
+            font-size:@font1;
+            color:@font-Lgray;
+        }
+        span{
+            margin-right:1rem;
+            i{
+                display: inline-block;
+                width:4px;
+                height:4px;
+                background: @org;
+                vertical-align: middle;
+                border-radius: 50%;
+                margin-right:0.2rem;
+            }
+        }
+    }
+    li:nth-last-of-type(1){
+        border:none;
+    }
+}
+.comment{
+    display: block;
+    line-height: 3rem;
+    line-height: 3rem;
+    width:100%;
+    padding:0 0.5rem ;
+    box-sizing: border-box;
+    font-size:@font1;
+    span{
+        float: right;
+        i{
+            color:@font-Sgray;
+            margin-left: 0.5rem;
+        }
+    }
+}
+.imgList{
+    text-align: center;
+    padding:1rem;
+    .title{
+        color:@org;
+        font-size:@font1-25;
+        margin-bottom: 1rem;
+    }
+    img{
+        max-width: 100%;
+        vertical-align: middle;
+    }
 }
 </style>

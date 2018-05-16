@@ -1,10 +1,10 @@
 <template>
     <div>
         <div class="i-content">
-            <home v-if="this.indexStateS == 0">1</home>
-            <div v-if="this.indexStateS == 1">2</div>
-            <div v-if="this.indexStateS == 2">3</div>
-            <div v-if="this.indexStateS == 3">4</div>
+            <home v-if="this.indexStateS == 0"></home>
+            <div v-if="this.indexStateS == 1">暂无内容</div>
+            <div v-if="this.indexStateS == 2">暂无内容</div>
+            <user v-if="this.indexStateS == 3">暂无内容</user>
         </div>
         <i-footer></i-footer>
     </div>
@@ -14,11 +14,13 @@
 import {mapGetters} from 'vuex'
 import iFooter from '@/components/i-footer'
 import home from '@/base/home'
+import user from '@/base/user'
 export default {
     name:'index',
     components:{
       iFooter,
-      home
+      home,
+      user
     },
     computed:{
         ...mapGetters([

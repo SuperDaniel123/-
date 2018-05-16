@@ -1,0 +1,60 @@
+<template>
+    <div>
+        <div class="userTop clearfix">
+            <img src="@/common/images/userhead.png" />
+            <div class="ninc">
+                <p>昵称：Daniel</p>
+                <span>Daniel</span>
+            </div>
+        </div>
+        <div class="e-line"></div>
+        <van-cell-group>
+            <van-cell title="爱车档案" is-link />
+            <van-cell title="个人信息" is-link />
+        </van-cell-group>
+        <div class="e-line"></div>
+        <van-cell-group>
+            <van-cell title="我的订单" is-link to="/orderform"/>
+            <van-cell title="购物车" is-link to="/shoppingCart" />
+            <van-cell title="收藏" is-link />
+        </van-cell-group>
+        <div class="e-line"></div>
+        <van-cell-group>
+            <van-cell title="地址管理" is-link to="/address" />
+            <van-cell title="修改密码" is-link />
+            <van-cell title="退出登录" is-link />
+        </van-cell-group>
+    </div>
+</template>
+
+<script>
+export default {
+    
+}
+</script>
+
+<style lang="less" scoped>
+@import '../common/css/common.less';
+.userTop{
+    padding:1rem 2rem;
+    img{
+        width:5rem;
+        height:5rem;
+        float: left;
+        vertical-align: middle
+    }
+    .ninc{
+        line-height: 1.8rem;
+        float: left;
+        margin:1rem 0 0 1rem;
+        p{
+            font-size:1.2rem;
+        }
+        span{
+            font-size:1rem;
+            color:@font-Sgray;
+        }
+    }
+    
+}
+</style>
