@@ -120,6 +120,12 @@ export default {
         swiper, 
         swiperSlide
     },
+    props:['cat'],
+    watch:{
+        'cat'(val,old){
+            console.log(val)
+        }
+    },
     data(){
         return{
             swiperOption: {

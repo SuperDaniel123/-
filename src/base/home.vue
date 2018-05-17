@@ -7,13 +7,13 @@
             </div>
             <ul class="i-nav">
                 <li v-for="(item,index) in navList" :key="index" @click="cutPage(index)">
-                    <span v-text="item.name"></span>
+                    <span v-text="item.cat_name"></span>
                     <i :class="item.stated == 1? 'line' : '' "></i>
                 </li>
             </ul>
         </div>
-        <home-first v-if="index == 0"></home-first>
-        <home-other v-if="index != 0"></home-other>
+        <home-first v-if="index == 0" :cat="cat_id"></home-first>
+        <home-other v-if="index != 0" :cat="cat_id"></home-other>
     </div>
 </template>
 
@@ -27,46 +27,31 @@ export default {
     },
     watch:{
         'scroll'(val,old){
-            if(val >= 200){
+            if(val >= 150){
                 this.style = 1;
             }
-            if(val < 200){
+            if(val < 150){
                 this.style = 0;
             }
         },
+        'index'(val,old){
+            this.cat_id = this.navList[val].cat_id
+        }
+    },
+
+    created(){
+        this.getNav()
     },
     data(){
         return{
-            navList:[
-                {
-                    name:'首页',
-                    stated:1
-                },
-                {
-                    name:'汽车香水',
-                    stated:0
-                },
-                {
-                    name:'底装装甲',
-                    stated:0
-                },
-                {
-                    name:'汽车外饰',
-                    stated:0
-                },
-                {
-                    name:'车载电器',
-                    stated:0
-                },
-                {
-                    name:'汽车内饰',
-                    stated:0
-                }
-            ],
+            
+            navList:[],
             index:0,
             scroll:'',
             //头部样式变化
-            style:0
+            style:0,
+            //当前导航类型
+            cat_id:''
         }
     },
     methods:{
@@ -85,6 +70,15 @@ export default {
                 return 'homeTop see'
             }
             return this.style == 0? 'homeTop':'homeTop see'
+        },
+
+        //获取导航
+        getNav(){
+            this.$ajax('/index/Goods/GoodsCat','post',this.$sess('Condition', {status : 0})).then(res=>{
+                let data = res.data.Data
+                this.navList = data
+                this.cat_id = data[0].cat_id
+            })
         }
     },
     mounted(){
@@ -140,9 +134,10 @@ export default {
     .i-nav{
         width:100%;
         display: flex;
+        flex-wrap:wrap;
         li{
             text-align: center;
-            flex: 1;
+            padding:0 0.5rem;
             position:relative;
             line-height: 30px;
             color:@white;

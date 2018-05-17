@@ -1,20 +1,17 @@
 <template>
     <div>
         <van-swipe class="banner" :autoplay="3000">
-            <van-swipe-item></van-swipe-item>
-            <van-swipe-item></van-swipe-item>
-            <van-swipe-item></van-swipe-item>
-            <van-swipe-item></van-swipe-item>
+            <van-swipe-item v-for="(item,index) in bannerList" :key="index"><img :src="base + item.img_path" /></van-swipe-item>
         </van-swipe>
         <div class="recBox">
             <div class="titled bottomRim"><b>NO1</b>每日推荐<div class="more" @click="gone">更多</div></div>
             <ul class="otherList">
-                <li>
+                <li v-for="(item,index) in recommend" :key="index">
                     <router-link to="/productDetails">
-                        <img src="../common/images/banner.jpg" />
+                        <img :src="base + item.daily_special_image" />
                         <div class="text">
-                            <p>产品名称</p>
-                            <span>&yen; 39.00</span>
+                            <p v-text="item.goods_name"></p>
+                            <span>&yen;{{item.now_price}}</span>
                             <i class="fa fa-angle-right"></i>
                         </div>
                     </router-link>
@@ -22,90 +19,17 @@
             </ul>
         </div>
         <div>
-            <van-tabs sticky>
-                <van-tab v-for="index in 8"  :key="index.index">
+            <van-tabs sticky v-model="rushActivate" :line-width="30">
+                <van-tab v-for="(item,index) in rushNav"  :key="index">
                     <div slot="title">
-                        <span>精选产品<br>8:00</span>
+                        <span>{{item.name}}<br>{{item.stated}}</span>
                     </div>
                     <ul class="otherList">
-                        <li>
-                            <img src="../common/images/banner.jpg" />
+                        <li v-for="(item,index) in rushlist" :key="index">
+                            <img :src="base + item.thumbnail" />
                             <div class="text">
-                                <p>产品名称</p>
-                                <span>&yen; 39.00</span>
-                                <i class="fa fa-angle-right"></i>
-                            </div>
-                        </li>
-                        <li>
-                            <img src="../common/images/banner.jpg" />
-                            <div class="text">
-                                <p>产品名称</p>
-                                <span>&yen; 39.00</span>
-                                <i class="fa fa-angle-right"></i>
-                            </div>
-                        </li>
-
-                        <li>
-                            <img src="../common/images/banner.jpg" />
-                            <div class="text">
-                                <p>产品名称</p>
-                                <span>&yen; 39.00</span>
-                                <i class="fa fa-angle-right"></i>
-                            </div>
-                        </li>
-                        <li>
-                            <img src="../common/images/banner.jpg" />
-                            <div class="text">
-                                <p>产品名称</p>
-                                <span>&yen; 39.00</span>
-                                <i class="fa fa-angle-right"></i>
-                            </div>
-                        </li>
-                        <li>
-                            <img src="../common/images/banner.jpg" />
-                            <div class="text">
-                                <p>产品名称</p>
-                                <span>&yen; 39.00</span>
-                                <i class="fa fa-angle-right"></i>
-                            </div>
-                        </li>
-                        <li>
-                            <img src="../common/images/banner.jpg" />
-                            <div class="text">
-                                <p>产品名称</p>
-                                <span>&yen; 39.00</span>
-                                <i class="fa fa-angle-right"></i>
-                            </div>
-                        </li>
-                        <li>
-                            <img src="../common/images/banner.jpg" />
-                            <div class="text">
-                                <p>产品名称</p>
-                                <span>&yen; 39.00</span>
-                                <i class="fa fa-angle-right"></i>
-                            </div>
-                        </li>
-                        <li>
-                            <img src="../common/images/banner.jpg" />
-                            <div class="text">
-                                <p>产品名称</p>
-                                <span>&yen; 39.00</span>
-                                <i class="fa fa-angle-right"></i>
-                            </div>
-                        </li>
-                        <li>
-                            <img src="../common/images/banner.jpg" />
-                            <div class="text">
-                                <p>产品名称</p>
-                                <span>&yen; 39.00</span>
-                                <i class="fa fa-angle-right"></i>
-                            </div>
-                        </li>
-                        <li>
-                            <img src="../common/images/banner.jpg" />
-                            <div class="text">
-                                <p>产品名称</p>
-                                <span>&yen; 39.00</span>
+                                <p v-text="item.goods_name"></p>
+                                <span>&yen; {{item.now_price}}</span>
                                 <i class="fa fa-angle-right"></i>
                             </div>
                         </li>
@@ -118,9 +42,103 @@
 
 <script>
 export default {
+    
+    props:['cat'],
+    created(){
+        this.focusMap()
+    },
+    watch:{
+        'rushActivate':{
+            handler(val,old){
+                this.getRushList(this.rushNav[val])
+            },
+            deep:true
+        }
+    },
+    computed:{
+
+    },
+    data(){
+        return {
+
+            //域名
+            base:this.$base,
+            //抢购nav
+            rushNav:[
+                {name:'昨天',stated:'抢购中',timer:'',date:'yesterday'},
+                {name:'8:00',stated:this.timedOut(8),timer:'08',date:'today'},
+                {name:'12:00',stated:this.timedOut(12),timer:'12',date:'today'},
+                {name:'20:00',stated:this.timedOut(20),timer:'20',date:'today'},
+                {name:'明天',stated:'即将开始',timer:'',date:'tomorrow'}
+            ],
+            
+            //当前激活
+            rushActivate:null,
+            //抢购列表
+            rushlist:[],
+
+            //banner图
+            bannerList:[],
+            //接口域名
+            base:this.$base,
+            //每日推荐
+            recommend:[]
+        }
+    },
     methods:{
         gone(){
             this.$router.push('/proList')
+        },
+        //判读抢购状态
+        timedOut(num){
+            let md = new Date();
+            if(md.getHours()>num){
+                return '抢购中'
+            }else{
+                return '即将开始'
+            }
+        },
+        //banner图
+        focusMap(){
+            let opt = {
+                user_id:'',
+                limit:4,
+                page:1,
+                classify:0
+            }
+            this.$ajax('/index/Goods_Advertising/AdvertisingList','post',this.$sess('Condition',opt)).then(res=>{
+                let data = res.data.Data
+                this.bannerList = data;
+                this.getRecommend()
+            })
+        },
+        //每日推荐
+        getRecommend(){
+            let opt = {
+                actionType:'special',
+                limit:1,
+                page:1,
+                cat_id:this.cat
+            }
+            this.$ajax('/index/daily_special/special','post',this.$sess('info',opt)).then(res=>{
+                let data = res.data.Data
+                this.recommend = data
+            })
+        },
+        //抢购接口
+        getRushList(obj){
+            let opt = {
+                actionType:'saleList',
+                limit:10,
+                sale_day:obj.date,
+                sale_hour:obj.timer,
+                page:1,
+                cat_id:this.cat
+            }
+            this.$ajax('/index/flash_sale/dataList','post',this.$sess('info',opt)).then(res=>{
+                let data = res.data.Data
+                this.rushlist = data
+            })
         }
     }
 }
@@ -129,18 +147,15 @@ export default {
 <style lang="less" scoped>
 @import '../common/css/common.less';
 .banner{
-    height:300px;
-    .van-swipe-item:nth-of-type(1){
+    // height:300px;
+    .van-swipe-item{
         background: @org;
     }
-    .van-swipe-item:nth-of-type(2){
-        background: @roseRed;
-    }
-    .van-swipe-item:nth-of-type(3){
-        background: @blue;
-    }
-    .van-swipe-item:nth-of-type(4){
-        background: @font-Lgray;
+    img{
+        width:100%;
+        height:100%;
+        object-fit: cover;
+        vertical-align: middle;
     }
 }
 .recBox{
