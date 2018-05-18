@@ -65,6 +65,7 @@ textarea {
 /*去掉图片底部默认空白缝隙*/
 img {
     border: 0;
+    max-width:100%;
     vertical-align: middle;
 }
 /*合并外连线*/

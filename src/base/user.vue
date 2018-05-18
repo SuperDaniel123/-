@@ -6,6 +6,7 @@
                 <p>昵称：Daniel</p>
                 <span>Daniel</span>
             </div>
+            
         </div>
         <div class="e-line"></div>
         <van-cell-group>
@@ -22,14 +23,23 @@
         <van-cell-group>
             <van-cell title="地址管理" is-link to="/address" />
             <van-cell title="修改密码" is-link />
-            <van-cell title="退出登录" is-link />
+            <van-cell title="退出登录" is-link @click="logout"/>
         </van-cell-group>
     </div>
 </template>
 
 <script>
 export default {
-    
+    methods:{
+        logout(){
+            this.$toast('退出成功')
+            setTimeout(()=>{
+                sessionStorage.removeItem('MID');
+                window.location.reload();
+            },1000)
+            
+        }
+    }
 }
 </script>
 

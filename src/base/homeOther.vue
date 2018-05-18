@@ -1,107 +1,41 @@
 <template>
     <div>
+        
         <div class="focusBox">
             <van-swipe class="banner" :autoplay="3000">
-                <van-swipe-item></van-swipe-item>
-                <van-swipe-item></van-swipe-item>
-                <van-swipe-item></van-swipe-item>
-                <van-swipe-item></van-swipe-item>
+                <van-swipe-item v-if="bannerList.length == 0">
+                    <div>暂无数据</div>
+                </van-swipe-item>
+                <van-swipe-item v-for="(item,index) in bannerList" :key="index">
+                    <img :src="base + item.img_path" />
+                </van-swipe-item>
+
             </van-swipe>
         </div>
-
+        <loading v-if="loaded"></loading>
         <div class="recBox">
             <div class="titled bottomRim"><b>NO1</b>每日推荐</div>
               <swiper :options="swiperOption" ref="mySwiper">
                     <!-- slides -->
-                <swiper-slide><div class="box"></div></swiper-slide>
-                <swiper-slide><div class="box"></div></swiper-slide>
-                <swiper-slide><div class="box"></div></swiper-slide>
-                <swiper-slide><div class="box"></div></swiper-slide>
-                <swiper-slide><div class="box"></div></swiper-slide>
-                <swiper-slide><div class="box"></div></swiper-slide>
-                <swiper-slide><div class="box"></div></swiper-slide>
+                <swiper-slide v-for="(item,index) in recommend" :key="index" >
+                    <div class="box" @click="pushDetails(item.goods_id)">
+                        <img :src="base + item.daily_special_image" />
+                        <div class="text">
+                            <p v-text="item.goods_name"></p>
+                            <span>&yen;{{item.now_price}}</span>
+                        </div>
+                    </div>
+                </swiper-slide>
             </swiper>
         </div>
         <div class="recBox">
             <div class="titled bottomRim"><b>NO1</b>精选好货</div>
                 <ul class="otherList">
-                    <li>
-                        <img src="../common/images/banner.jpg" />
+                    <li v-for="(item,index) in goodsList" :key="index" @click="pushDetails(item.goods_id)">
+                        <img :src="base + item.thumbnail" />
                         <div class="text">
-                            <p>产品名称</p>
-                            <span>&yen; 39.00</span>
-                            <i class="fa fa-angle-right"></i>
-                        </div>
-                    </li>
-                    <li>
-                        <img src="../common/images/banner.jpg" />
-                        <div class="text">
-                            <p>产品名称</p>
-                            <span>&yen; 39.00</span>
-                            <i class="fa fa-angle-right"></i>
-                        </div>
-                    </li>
-                    <li>
-                        <img src="../common/images/banner.jpg" />
-                        <div class="text">
-                            <p>产品名称</p>
-                            <span>&yen; 39.00</span>
-                            <i class="fa fa-angle-right"></i>
-                        </div>
-                    </li>
-                    <li>
-                        <img src="../common/images/banner.jpg" />
-                        <div class="text">
-                            <p>产品名称</p>
-                            <span>&yen; 39.00</span>
-                            <i class="fa fa-angle-right"></i>
-                        </div>
-                    </li>
-                    <li>
-                        <img src="../common/images/banner.jpg" />
-                        <div class="text">
-                            <p>产品名称</p>
-                            <span>&yen; 39.00</span>
-                            <i class="fa fa-angle-right"></i>
-                        </div>
-                    </li>
-                    <li>
-                        <img src="../common/images/banner.jpg" />
-                        <div class="text">
-                            <p>产品名称</p>
-                            <span>&yen; 39.00</span>
-                            <i class="fa fa-angle-right"></i>
-                        </div>
-                    </li>
-                    <li>
-                        <img src="../common/images/banner.jpg" />
-                        <div class="text">
-                            <p>产品名称</p>
-                            <span>&yen; 39.00</span>
-                            <i class="fa fa-angle-right"></i>
-                        </div>
-                    </li>
-                    <li>
-                        <img src="../common/images/banner.jpg" />
-                        <div class="text">
-                            <p>产品名称</p>
-                            <span>&yen; 39.00</span>
-                            <i class="fa fa-angle-right"></i>
-                        </div>
-                    </li>
-                    <li>
-                        <img src="../common/images/banner.jpg" />
-                        <div class="text">
-                            <p>产品名称</p>
-                            <span>&yen; 39.00</span>
-                            <i class="fa fa-angle-right"></i>
-                        </div>
-                    </li>
-                    <li>
-                        <img src="../common/images/banner.jpg" />
-                        <div class="text">
-                            <p>产品名称</p>
-                            <span>&yen; 39.00</span>
+                            <p v-text="item.goods_name"></p>
+                            <span>&yen; {{item.now_price}}</span>
                             <i class="fa fa-angle-right"></i>
                         </div>
                     </li>
@@ -115,19 +49,33 @@
 
 <script>
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
+import loading from '@/components/loading'
 export default {
     components:{
         swiper, 
-        swiperSlide
+        swiperSlide,
+        loading
     },
     props:['cat'],
     watch:{
         'cat'(val,old){
-            console.log(val)
+            this.emptyData()
+            
         }
+    },
+    created(){
+        this.emptyData()
     },
     data(){
         return{
+            //域名
+            base:this.$base,
+            //banner图
+            bannerList:[],
+            //每日推荐
+            recommend:[],
+
+            //每日推荐滚动
             swiperOption: {
                 slidesPerView: 3,
                 spaceBetween: 30,
@@ -136,7 +84,71 @@ export default {
                     el: '.swiper-pagination',
                     clickable: true,
                 }
+            },
+            //精选好货
+            goodsList:[],
+            loaded:false
+        }
+    },
+    methods:{
+        //banner图
+        focusMap(){
+            let opt = {
+                user_id:'',
+                limit:4,
+                page:1,
+                classify:this.cat
             }
+            this.$ajax('/index/Goods_Advertising/AdvertisingList','post',this.$sess('Condition',opt)).then(res=>{
+                let data = res.data.Data
+                this.bannerList = data;
+                
+            })
+        },
+        //每日推荐
+        getRecommend(){
+            let opt = {
+                actionType:'special',
+                limit:10,
+                page:1,
+                cat_id:17
+            }
+            this.$ajax('/index/daily_special/special','post',this.$sess('info',opt)).then(res=>{
+                let data = res.data.Data
+                this.recommend = data
+            })
+        },
+        getGoodsList(){
+            let opt = {
+                Paging:{
+                    Page:1,
+                    Limit:10
+                },
+                LikeWhere:{
+                    cat_id:this.cat
+                }
+            }
+            this.$ajax('/index/Goods/GoodsList','post',this.$sess('Condition',opt)).then(res=>{
+                let data = res.data.Data
+                this.goodsList = data
+                this.loaded = false;
+            })
+        },
+        //清空
+        emptyData(){
+            this.loaded = true;
+            this.bannerList = this.recommend = this.goodsList = []
+            this.focusMap()
+            this.getRecommend()
+            this.getGoodsList()
+        },
+        pushDetails(id){
+            this.$router.push({
+                name:'productDetails',
+                params:{
+                    goods_id:id
+                }
+            })
         }
     }
 }
@@ -153,17 +165,19 @@ export default {
 }
 .banner{
     height:150px;
-    .van-swipe-item:nth-of-type(1){
+    .van-swipe-item{
         background: @org;
+        div{
+            text-align: center;
+            color:#fff;
+            line-height: 150px;
+        }
     }
-    .van-swipe-item:nth-of-type(2){
-        background: @roseRed;
-    }
-    .van-swipe-item:nth-of-type(3){
-        background: @blue;
-    }
-    .van-swipe-item:nth-of-type(4){
-        background: @font-Lgray;
+    img{
+        width:100%;
+        height:100%;
+        object-fit: cover;
+        vertical-align: middle;
     }
 }
  .swiper-container {
@@ -173,19 +187,39 @@ export default {
       height: 100%;
     }
     .swiper-slide {
-        width:100px;
+      width:100px;
       text-align: center;
       font-size: 18px;
-      background: black;
       /* Center slide text vertically */
       /* Center slide text vertically */
       display: flex;
       .box{
           width:100px;
-          height:100px;
+          img {
+              width:100px;
+              height:100px;
+              object-fit: cover;
+              vertical-align: middle;
+          }
+          .text{
+                p{
+                    display: -webkit-box;
+                    -webkit-box-orient: vertical;
+                    -webkit-line-clamp: 2;
+                    overflow: hidden;
+                    font-size:12px;
+                    line-height: 18px;
+                    height:36px;
+                }
+                span{
+                    color:@red;
+                    font-size:@font1;
+                }
+          }
       }
     }
 .recBox{
     width:100%;
 }
+
 </style>

@@ -132,10 +132,10 @@ export default {
         }
     }
     .i-nav{
-        width:100%;
-        display: flex;
-        flex-wrap:wrap;
+        overflow: auto;
+        white-space: nowrap;
         li{
+            display: inline-block;
             text-align: center;
             padding:0 0.5rem;
             position:relative;

@@ -39,8 +39,12 @@
 <script>
 import {mapMutations} from 'vuex'
 import { setInterval, clearInterval } from 'timers';
+import md5 from 'js-md5';
 export default {
     name:'login',
+    components:{
+        md5
+    },
     beforeCreate(){
         localStorage.removeItem('time')
     },
@@ -49,12 +53,10 @@ export default {
             token:'',
             userPhone:localStorage.getItem('userName') || '',
             password:'',
-            facility:'iphone',
-            ip:'127.0.0.1',
             //0 是登录，1是忘记密码, 2是注册
             state:0,
             
-            //验证码按钮
+            //验证码按钮 
             sdCode:'获取验证码',
             //禁用状态
             disabled:false,
@@ -72,17 +74,14 @@ export default {
     methods:{
         ...mapMutations({
             setMID:'SET_MID',
-            // setUID:'SET_UID',
             isLogin:'IS_LOGIN'
         }),
         getLogin(){
             let opt = {
-                LoginID:this.userPhone,
-                LoginPwd:this.password,
-                LoginDev:this.facility, 
-                LoginIP:this.ip
+                account:this.userPhone,
+                password:md5(this.password)
             }
-            this.$ajax('/login','post',opt).then(res=>{
+            this.$ajax('/index/Login/login','post',this.$sess('UserInfo',opt)).then(res=>{
                 let data = res.data;
                 if(this.userPhone == ''){
                     this.$toast('请输入用户名')
@@ -93,33 +92,34 @@ export default {
                 }
                 
                 switch(data.ResultCD){
-                    case -3:{ 
-                        this.$toast('用户名长或密码长度不正确')
+                    case "4003":{ 
+                        this.$toast('用户名或密码错误')
+                        break;
+                    }
+                    case "4006":{
+                        this.$toast('账户不存在')
                         break;
                     }
                     
-                    case "4129":{
-                        this.$toast(data.ErrorMsg)
-                        break;
-                    }
-                    case "500":{
-                        this.$toast(data.ErrorMsg)
+                    case "4004":{
+                        this.$toast('登录失败')
                         break;
                     }
                     default:{
-                        sessionStorage.setItem('MID',data.Data.MID)
-                        // sessionStorage.setItem('UID',data.Data.UID)
+                        this.$toast('登录成功')
+                        sessionStorage.setItem('MID',JSON.stringify(data.Data))
                         localStorage.setItem('userName',this.userPhone)
-                        localStorage.setItem('time',Date.parse(new Date()) + (35*60*1000))
-                        this.isLogin(true);
-                        this.setMID(sessionStorage.getItem('MID'));
-                        // this.setUID(sessionStorage.getItem('UID'));
-                        this.$router.push({
-                            path:'/'
-                        })
+                        // localStorage.setItem('time',Date.parse(new Date()) + (35*60*1000))
+                        setTimeout(()=>{
+                            this.$router.push({
+                                path:'/'
+                            })
+                        },1000)
+
                     }
                 }
             })
+
         },
         getToken(id){
             this.state = id
@@ -135,9 +135,6 @@ export default {
                     this.sdCode = '获取验证码'
                 }
             },1000)
-            
-            
-            
         },
         //获取验证码
         getCode(code){

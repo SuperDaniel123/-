@@ -33,7 +33,7 @@ export default new Router({
         },
         //商品详情
         {
-          path:'/productDetails',
+          path:'/productDetails/:goods_id',
           name:'productDetails',
           component:resolve => require(['@/base/productDetails'],resolve)
         },

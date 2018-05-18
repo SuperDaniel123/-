@@ -1,5 +1,6 @@
 <template>
     <div>
+        <loading v-if="loaded"></loading>
         <van-swipe class="banner" :autoplay="3000">
             <van-swipe-item v-for="(item,index) in bannerList" :key="index"><img :src="base + item.img_path" /></van-swipe-item>
         </van-swipe>
@@ -7,7 +8,7 @@
             <div class="titled bottomRim"><b>NO1</b>每日推荐<div class="more" @click="gone">更多</div></div>
             <ul class="otherList">
                 <li v-for="(item,index) in recommend" :key="index">
-                    <router-link to="/productDetails">
+                    <router-link :to="{name:'productDetails',params:{goods_id:item.goods_id}}">
                         <img :src="base + item.daily_special_image" />
                         <div class="text">
                             <p v-text="item.goods_name"></p>
@@ -24,7 +25,8 @@
                     <div slot="title">
                         <span>{{item.name}}<br>{{item.stated}}</span>
                     </div>
-                    <ul class="otherList">
+                    <div v-if="rushlist.length == 0" class="empty">暂无抢购商品</div>
+                    <ul v-if="rushlist.length != 0" class="otherList">
                         <li v-for="(item,index) in rushlist" :key="index">
                             <img :src="base + item.thumbnail" />
                             <div class="text">
@@ -41,8 +43,11 @@
 </template>
 
 <script>
+import loading from '@/components/loading'
 export default {
-    
+    components:{
+        loading
+    },
     props:['cat'],
     created(){
         this.focusMap()
@@ -82,7 +87,8 @@ export default {
             //接口域名
             base:this.$base,
             //每日推荐
-            recommend:[]
+            recommend:[],
+            loaded:false
         }
     },
     methods:{
@@ -100,12 +106,14 @@ export default {
         },
         //banner图
         focusMap(){
+            this.loaded = true
             let opt = {
                 user_id:'',
                 limit:4,
                 page:1,
                 classify:0
             }
+            
             this.$ajax('/index/Goods_Advertising/AdvertisingList','post',this.$sess('Condition',opt)).then(res=>{
                 let data = res.data.Data
                 this.bannerList = data;
@@ -123,6 +131,7 @@ export default {
             this.$ajax('/index/daily_special/special','post',this.$sess('info',opt)).then(res=>{
                 let data = res.data.Data
                 this.recommend = data
+                this.loaded = false
             })
         },
         //抢购接口
@@ -160,5 +169,9 @@ export default {
 }
 .recBox{
     width:100%;
+}
+.empty{
+    line-height: 10rem;
+    text-align: center;
 }
 </style>
