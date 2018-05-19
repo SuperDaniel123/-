@@ -48,7 +48,7 @@
                 <van-goods-action-mini-btn icon="chat" text="客服" />
                 <van-goods-action-mini-btn icon="like-o" text="收藏"  v-if="!details.is_collection" @click="Condition(true)"/>
                 <van-goods-action-mini-btn icon="like" style="color:#f58125" text="收藏"  v-if="details.is_collection" @click="Condition(false)"/>
-                <van-goods-action-big-btn text="加入购物车"  />
+                <van-goods-action-big-btn text="加入购物车" @click="addShoppingCart(details.goods_id)" />
                 <van-goods-action-big-btn text="立即购买" primary />
             </van-goods-action>
         </div>
@@ -76,6 +76,7 @@ export default {
     },
     created(){
         this.getDetails()
+        
     },
     data(){
         return{
@@ -98,6 +99,23 @@ export default {
         menu() {this.scroll = document.documentElement.scrollTop || document.body.scrollTop;},
         back(){
             this.$router.goBack()
+        },
+        addShoppingCart(id){
+            let opt ={
+                user_id:this.setMID.user_id,
+                goods_id:id,
+                goods_quantity:this.count
+            }
+            this.$ajax('/index/Goods/GoodsDetail','post',this.$sess('Condition',opt)).then(res=>{
+                let data = res.data
+                if(data.ResultCD != 200){
+                    this.$toast(data.ErrorMsg)
+                    return;
+                }
+                this.$toast('添加成功')
+                
+            })
+
         },
         countNum(id){
             //0为减，1为加
@@ -122,6 +140,7 @@ export default {
 
         //收藏
         Condition(boolen){
+            console.log(this.setMID)
             if(boolen){
                 let opt = {
                     user_id:this.setMID.user_id,

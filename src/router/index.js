@@ -27,7 +27,7 @@ export default new Router({
         },
         //产品列表
         {
-          path:'/proList',
+          path:'/proList/:cat?/:keyword?',
           name:'proList',
           component:resolve => require(['@/base/proList'],resolve)
         },

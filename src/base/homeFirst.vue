@@ -93,7 +93,12 @@ export default {
     },
     methods:{
         gone(){
-            this.$router.push('/proList')
+            this.$router.push({
+                name:'proList',
+                params:{
+                    cat:this.cat
+                }
+            })
         },
         //判读抢购状态
         timedOut(num){

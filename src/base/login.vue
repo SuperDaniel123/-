@@ -74,6 +74,7 @@ export default {
     methods:{
         ...mapMutations({
             setMID:'SET_MID',
+            verify:'VERIFY',
             isLogin:'IS_LOGIN'
         }),
         getLogin(){
@@ -90,32 +91,25 @@ export default {
                     this.$toast('密码不能为空')
                     return;
                 }
-                
                 switch(data.ResultCD){
-                    case "4003":{ 
-                        this.$toast('用户名或密码错误')
-                        break;
-                    }
-                    case "4006":{
-                        this.$toast('账户不存在')
-                        break;
-                    }
-                    
-                    case "4004":{
-                        this.$toast('登录失败')
-                        break;
-                    }
-                    default:{
+                    case 200 :{
                         this.$toast('登录成功')
                         sessionStorage.setItem('MID',JSON.stringify(data.Data))
                         localStorage.setItem('userName',this.userPhone)
+                        this.verify(JSON.parse(sessionStorage.getItem('MID')))
+                        this.setMID(JSON.parse(sessionStorage.getItem('MID')))
+                        console.log(this.$store.getters.verify)
                         // localStorage.setItem('time',Date.parse(new Date()) + (35*60*1000))
                         setTimeout(()=>{
                             this.$router.push({
                                 path:'/'
                             })
                         },1000)
-
+                        break;
+                    }
+                    default:{
+                        this.$toast(data.ErrorMsg)
+                        break;
                     }
                 }
             })

@@ -5,13 +5,13 @@
             <van-checkbox-group v-model="result" @change="geta">
                 <van-checkbox label-disabled v-for="(item,index) in list" :key="index" :name="item"  >
                     <div class="textBox clearfix">
-                        <img src="@/common/images/banner.jpg" />
+                        <img :src="base + item.thumbnail" />
                         <div class="datum">
-                            <h3>卡通车用腰靠毛绒抱枕空调被两用抱枕午睡毯</h3>
-                            <span class="classify">汽车内饰</span>
+                            <h3 v-text="item.goods_name"></h3>
+                            <span class="classify" v-text="item.cat_id"></span>
                             <div class="price">
-                                <span>&yen;59.90</span>
-                                <div class="num"><i>-</i><input type="number" value="1" /><i>+</i></div>
+                                <span>&yen;{{item.now_price}}</span>
+                                <div class="num"><i @click="quantity(0,item.goods_id)">-</i><input type="number" :value="item.goods_quantity" /><i @click="quantity(1,item.goods_id)">+</i></div>
                             </div>
                         </div>
                     </div>
@@ -21,7 +21,7 @@
         <div class="bottom">
             <van-checkbox v-model="checked" @change="checkAll">全选</van-checkbox>
             <input type="button" value="结算"  @click="gonePay"/>
-            <p class="sum">合计:<span>&yen;0元</span></p>
+            <p class="sum">合计:<span>&yen;{{sumPri}}</span></p>
         </div>
         
         
@@ -30,9 +30,16 @@
 
 <script>
 import iHeader from '../components/i-header'
+import { mapGetters } from 'vuex'
 export default {
     components:{
         iHeader
+    },
+    created(){
+        this.getCartList()
+    },
+    computed:{
+        ...mapGetters(['setMID','verify'])
     },
     watch:{
         'result':{
@@ -44,18 +51,23 @@ export default {
     },
     data(){
         return{
+            //域名
+            base:this.$base,
+
             headline:'购物车',
             //列表
-            list: [{a:'a'}, 'b', 'c'],
+            list: [],
             //选择好的列表
             result: [],
             //全选反选
-            checked:false
+            checked:false,
+            //总价
+            sumPri:0
         }
     },
     methods:{
         geta(a){
-            // console.log(a)
+            this.priceOr(a)
         },
         checkAll(a){
             a == true ? this.result = this.list : this.result.length == this.list.length? this.result = [] : this.result
@@ -67,6 +79,54 @@ export default {
             }
             this.$router.push('/payment')
 
+        },
+        getCartList(){
+            let opt = {
+                Where:{
+                    user_id:this.setMID.user_id
+                }
+            }
+            let obj = Object.assign(this.$sess('Condition',opt),this.$sess('verify',this.verify))
+            this.$ajax('/index/Shopping_Cart/ShoppingCartList','post',obj).then(res=>{
+                let data = res.data;
+                if(data.ResultCD != 200){
+                    this.$toast(data.ErrorMsg)
+                    return;
+                }
+                this.list = data.Data
+            })
+        },
+        priceOr(a){
+            let ax = a.map((element)=>{
+                return +element.now_price * element.goods_quantity
+            })
+            let sum = 0;
+            for(let i = 0; i <ax.length; i++){
+                sum += +ax[i]
+            }
+            this.sumPri = sum
+        },
+        quantity(type,id){
+            
+            if(type == 0){
+                for(let i = 0; i < this.list.length; i++){
+                    let temp = this.list[i]
+                    if(temp['goods_id'] == id){
+                        if(temp['goods_quantity'] == 1){
+                            return
+                        }
+                        temp['goods_quantity'] -= 1
+                    }
+                }
+            }
+            if(type == 1){
+                for(let i = 0; i < this.list.length; i++){
+                    let temp = this.list[i]
+                    if(temp['goods_id'] == id){
+                        temp['goods_quantity'] += 1
+                    }
+                }
+            }
         }
     }
 }

@@ -2,15 +2,18 @@
     <div>
         <i-header :headline = headline></i-header>
         <div class="content">
-            <van-list v-model="loading" :finished="finished" @load="onLoad" offset="100">
-                <div class="alone" v-for="(item,index) in list" :key="index">
-                    <img src="../common/images/logo.png" />
+            <van-list v-model="loading" :finished="finished" @load="onLoad" :offset="200">
+                <div class="alone" v-for="(item,index) in ddlist" :key="index">
+                    <router-link :to="{name:'productDetails',params:{goods_id:item.goods_id}}">
+                    <img :src="base + item.thumbnail" />
                     <div class="text">
-                       <h2>发送到发送到发送到发送到发斯蒂芬</h2>
-                       <p>描述描述描述</p>
-                       <div class="pay"><span >&yen;38.00</span><i>爆卖款</i></div>
+                       <h2>{{item.goods_name}}</h2>
+                       <p>{{item.summary}}</p>
+                       <div class="pay"><span >&yen;{{item.now_price}}</span><i v-if="item.is_push == 0">爆卖款</i></div>
                     </div>
+                    </router-link>
                 </div>
+                <div v-if="finished" class="finished" >没有更多了..</div>
             </van-list>
         </div>
 
@@ -25,23 +28,52 @@ export default {
     },
     data() {
         return {
+            //域名
+            base:this.$base,
             headline:'商品列表',
-            list: [],
+            ddlist: [],
             loading: false,
-            finished: false
+            finished: false,
+            //当前页数
+            page:1
         };
     },
+    created(){
+        this.getList()
+    },
     methods:{
-        onLoad() {
-            setTimeout(() => {
-                for (let i = 0; i < 8; i++) {
-                this.list.push(this.list.length + 1);
+        getList(){
+            let opt = {
+                Paging:{
+                    Page:this.page,
+                    Limit:8,
+                },
+                LikeWhere:{
+                    goods_name:this.$route.params.keyword || "",
+                    cat_id:this.$route.params.cat || ""
                 }
-                this.loading = false;
-
-                if (this.list.length >= 40) {
+            }
+            this.$ajax('index/Goods/GoodsList','post',this.$sess('Condition',opt)).then(res=>{
+                let data = res.data
+                if(data.ResultCD != 200){
+                    if(data.ResultCD == 4003){
+                        this.finished = true;
+                        return
+                    }
+                    this.$toast(data.ErrorMsg)
+                    return
+                }
+                data.Data.forEach(element => {
+                    this.ddlist.push(element)
+                });
                 this.finished = true;
-                }
+            })
+        },
+        onLoad() {
+            this.page += 1;
+            setTimeout(() => {
+                this.getList();
+                this.loading = false;
             }, 500);
         }
     }
@@ -51,6 +83,11 @@ export default {
 <style lang="less" scoped>
 @import '../common/css/common.less';
 .van-list{
+    .finished{
+        width:100%;
+        text-align: center;
+        line-height: 3rem;
+    }
     display: flex;
     flex-wrap: wrap;
     justify-content:space-around; 
