@@ -15,7 +15,8 @@ let api = function(url,type,options){
     *   options   请求参数
     *   instance  请求首选项
     */
-    url = "api" + url
+    // url = 'http://api.zymc.cakcc.cn:88/' + url
+    url = 'api' + url
     let opt = options || {};
     let instance = axios.create({
         timeout: 5000,

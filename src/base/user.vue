@@ -17,7 +17,7 @@
         <van-cell-group>
             <van-cell title="我的订单" is-link to="/orderform"/>
             <van-cell title="购物车" is-link to="/shoppingCart" />
-            <van-cell title="收藏" is-link />
+            <van-cell title="收藏夹" is-link to="/collectionList"/>
         </van-cell-group>
         <div class="e-line"></div>
         <van-cell-group>

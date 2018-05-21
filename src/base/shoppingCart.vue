@@ -11,7 +11,7 @@
                             <span class="classify" v-text="item.cat_id"></span>
                             <div class="price">
                                 <span>&yen;{{item.now_price}}</span>
-                                <div class="num"><i @click="quantity(0,item.goods_id)">-</i><input type="number" :value="item.goods_quantity" /><i @click="quantity(1,item.goods_id)">+</i></div>
+                                <div class="num"><i @click="quantity(0,item.goods_id)">-</i><input  disabled="disabled" type="number" :value="item.goods_quantity" /><i @click="quantity(1,item.goods_id)">+</i></div>
                             </div>
                         </div>
                     </div>
@@ -30,7 +30,7 @@
 
 <script>
 import iHeader from '../components/i-header'
-import { mapGetters } from 'vuex'
+import { mapGetters,mapMutations } from 'vuex'
 export default {
     components:{
         iHeader
@@ -44,19 +44,39 @@ export default {
     watch:{
         'result':{
             handler(val,old){
-                this.checked = this.result.length == this.list.length? true: false
+                this.priceOr()
+                this.checked = this.result.length == this.list.length? true: false;
+                // if(this.oldList.length == 0){
+                //     return
+                // }
+                // for(let i = 0; i < this.result.length; i++){
+                //     let temp = this.result[i]
+                //     for(let j = 0; j < this.oldList.length; j++){
+                //         if(this.oldList[j] == temp){
+                //             return;
+                //         }
+                //         if(this.oldList[j]['goods_quantity'] > temp['goods_quantity']){
+                //             this.ShoppingCartOperating(0,temp.goods_id)
+                //             return
+                //         }
+                //         if(this.oldList[j]['goods_quantity'] < temp['goods_quantity']){
+                //             this.ShoppingCartOperating(1,temp.goods_id)
+                //         }
+                //     }
+                // }
             },
             deep:true
-        }
+        },
     },
     data(){
         return{
             //域名
             base:this.$base,
-
             headline:'购物车',
             //列表
             list: [],
+            //记录旧列表
+            // oldList:[],
             //选择好的列表
             result: [],
             //全选反选
@@ -66,8 +86,11 @@ export default {
         }
     },
     methods:{
-        geta(a){
-            this.priceOr(a)
+        ...mapMutations({
+            order:'COFORDER'
+        }),
+        geta(){
+            this.priceOr()
         },
         checkAll(a){
             a == true ? this.result = this.list : this.result.length == this.list.length? this.result = [] : this.result
@@ -77,8 +100,8 @@ export default {
                 this.$toast('最少选择一件商品')
                 return;
             }
+            this.order(this.result)
             this.$router.push('/payment')
-
         },
         getCartList(){
             let opt = {
@@ -96,8 +119,8 @@ export default {
                 this.list = data.Data
             })
         },
-        priceOr(a){
-            let ax = a.map((element)=>{
+        priceOr(){
+            let ax = this.result.map((element)=>{
                 return +element.now_price * element.goods_quantity
             })
             let sum = 0;
@@ -107,7 +130,7 @@ export default {
             this.sumPri = sum
         },
         quantity(type,id){
-            
+            // this.oldList = JSON.parse(JSON.stringify(this.list));  
             if(type == 0){
                 for(let i = 0; i < this.list.length; i++){
                     let temp = this.list[i]
@@ -116,6 +139,7 @@ export default {
                             return
                         }
                         temp['goods_quantity'] -= 1
+                        this.ShoppingCartOperating(type,id)
                     }
                 }
             }
@@ -124,9 +148,26 @@ export default {
                     let temp = this.list[i]
                     if(temp['goods_id'] == id){
                         temp['goods_quantity'] += 1
+                        this.ShoppingCartOperating(type,id)
                     }
                 }
             }
+        },
+        //操作购物车
+        ShoppingCartOperating(types,goodsId){
+            let opt ={
+                user_id:this.setMID.user_id,
+                goods_id:goodsId,
+                goods_quantity:1
+            }
+            if(types == 0){
+                opt['OperationType'] = 'setDec'
+            }
+            let obj = Object.assign(this.$sess('Condition',opt),this.$sess('verify',this.verify))
+            this.$ajax('/index/Shopping_Cart/ShoppingCartOperating','post',obj).then(res=>{
+                // console.log(res)
+            })
+            
         }
     }
 }

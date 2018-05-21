@@ -14,6 +14,12 @@ const mutations = {
             user_id:obj.user_id
         }
     },
+
+    //确认订单
+    [types.COFORDER](state,arr){
+        state.ComfirmOrders = arr
+    },
+
     //登录状态
     [types.IS_LOGIN](state,login){
         state.isLogin = login
@@ -23,6 +29,11 @@ const mutations = {
     [types.INDEX_STATE](state,index){
         state.indexState = index
     },
+
+    //编辑地址
+    [types.ADDRESSEDIT](state,obj){
+        state.addressEdit = obj
+    }
 }
 
 export default mutations

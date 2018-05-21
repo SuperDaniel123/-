@@ -8,6 +8,11 @@ const state = {
         user_id:JSON.parse(sessionStorage.getItem('MID')).user_id
     },
 
+    //确认订单列表
+    ComfirmOrders:[],
+
+    //编辑地址
+    addressEdit:{},
     //登录状态
     isLogin:false,
     //首页状态

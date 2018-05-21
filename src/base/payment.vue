@@ -3,29 +3,29 @@
         <i-header :headline = headline></i-header>
         <div class="content">
             <ul class="orderList">
-                <li>
-                    <img src="../common/images/banner.jpg" />
+                <li v-for="(item,index) in applyList" :key="index">
+                    <img :src="base + item.thumbnail" />
                     <div class="orderText">
-                        <h3>座式香水汽车香膏车内持久淡香创意香薰座式摆件除异味</h3>
-                        <span>种类：汽车香水</span>
-                        <span>数量：1</span>
-                        <big>&yen;68.00</big>
+                        <h3 v-text="item.goods_name"></h3>
+                        <span>种类：{{item.cat_id}}</span>
+                        <span>数量：{{item.goods_quantity}}</span>
+                        <big>&yen;{{+item.now_price * item.goods_quantity}}</big>
                     </div>
                 </li>
             </ul>
             <div class="rests">
-                <div>配送方式：<span>快递 包邮</span></div>
-                <div class="msg"><h4>买家留言：</h4><textarea placeholder="输入你的留言"></textarea></div>
+                <div>配送方式：<span>{{express == 0? '快递 包邮':'快递 自提'}}</span></div>
+                <div class="msg"><h4>买家留言：</h4><textarea v-model="msg" placeholder="输入你的留言"></textarea></div>
             </div>
             <div class="e-line"></div>
             <div class="ass" @click="goneAdd">
-                <p>地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址地址</p>
-                <div class="text"><span>收件人：李某某</span><span>电话:13579246810</span></div>
+                <p>{{address.province+" "+address.city+" "+address.district+" "+ address.address}}</p>
+                <div class="text"><span>收件人：{{address.shipping_name}}</span><span>电话:{{address.shipping_phone}}</span></div>
                 <i class="fa fa-angle-right"></i>
             </div>
             <div class="bottom">
                 <input type="button" value="提交订单" />
-                <p class="sum">合计:<span>&yen;0元</span></p>
+                <p class="sum">合计:<span>&yen;{{this.allPay}}</span></p>
             </div>
         </div>
     </div>
@@ -33,19 +33,67 @@
 
 <script>
 import iHeader from '../components/i-header'
+import {mapGetters} from 'vuex'
 export default {
     components:{
         iHeader
     },
+    computed:{
+        ...mapGetters(['setMID','verify','ComfirmOrders']),
+        applyList(){
+            return this.ComfirmOrders
+        },
+        allPay(){
+            let ax = this.ComfirmOrders.map((element)=>{
+                return +element.now_price * element.goods_quantity
+            })
+            let sum = 0;
+            for(let i = 0; i <ax.length; i++){
+                sum += +ax[i]
+            }
+            return sum;
+        }
+    },
+    created(){
+        if(this.ComfirmOrders.length == 0){
+            this.$router.push('/')
+        }
+        this.artAdd()
+    },
     data(){
         return{
-            headline:'确认订单'
+            //域名
+            base:this.$base,
+            headline:'确认订单',
+            //快递
+            express:0,
+            //留言
+            msg:'',
+            address:{}
         }
     },
     methods:{
         goneAdd(){
             this.$router.push('/address')
+        },
+        artAdd(){
+            let opt = {
+                actionType:'addressList',
+                user_id:this.setMID.user_id
+            }
+            let obj = Object.assign(this.$sess('info',opt),this.$sess('verify',this.verify))
+            this.$ajax('/index/shopping_address/addressList','post',obj).then(res=>{
+                let data = res.data;
+                for(let i = 0; i<data.Data.length; i++){
+                    let temp = data.Data[i]
+                    if(temp.defaultAddress == 1){  
+                        this.address = temp
+                        return;
+                    }
+                }
+            })
         }
+
     }
 }
 </script>

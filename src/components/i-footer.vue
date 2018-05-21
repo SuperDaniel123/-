@@ -29,16 +29,16 @@ export default {
                     icon:'fa-home',
                     state:'1'
                 },
-                {
-                    name:'弹个车',
-                    icon:'fa-car',
-                    state:'0'
-                },
-                {
-                    name:'新闻',
-                    icon:'fa-newspaper-o',
-                    state:'0'
-                },
+                // {
+                //     name:'弹个车',
+                //     icon:'fa-car',
+                //     state:'0'
+                // },
+                // {
+                //     name:'新闻',
+                //     icon:'fa-newspaper-o',
+                //     state:'0'
+                // },
                 {
                     name:'我的',
                     icon:'fa-user',

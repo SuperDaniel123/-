@@ -8,7 +8,7 @@ Router.prototype.goBack = function () {
 Vue.use(Router)
 
 export default new Router({
-  mode: 'history',
+  // mode: 'history',
   routes: [
     {
       path: '/',
@@ -63,7 +63,8 @@ export default new Router({
         },
         //添加地址 
         {
-          path:'/addressEdit',
+          //id   0为添加，1为编辑
+          path:'/addressEdit/:id',
           name:'addressEdit',
           component:resolve => require(['@/base/addressEdit'],resolve)
         },
@@ -73,6 +74,12 @@ export default new Router({
           name:'orderform',
           component:resolve => require(['@/base/orderform'],resolve)
         },
+        //收藏
+        {
+          path:'/collectionList',
+          name:'collectionList',
+          component:resolve => require(['@/base/collectionList'],resolve)
+        }
       ]
     },
     {
