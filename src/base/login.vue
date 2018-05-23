@@ -1,7 +1,7 @@
 <template>
   <div class="login">
      <div class="loginTest">
-         <img class="logo" src="@/common/images/logo.jpg" alt="logo" />
+         <img class="logo" src="@/common/images/logoindex.png" alt="logo" />
          <div class="input" v-if="state==0">
              <input type="number" name="userPhone" placeholder="请输入手机" v-model="userPhone" />
              <input type="password" name="password" placeholder="请输入密码" v-model="password" />
@@ -21,7 +21,7 @@
          </div>
         <!--注册-->
          <div class="input" v-if="state==2">
-             <input type="text" placeholder="推荐人" v-model="referrer" />
+             <input type="text" placeholder="推荐人，如果没有可不填" v-model="referrer" />
              <input type="number"  placeholder="请输入手机" v-model="registerPhone" />
              <input type="password" placeholder="请输入密码" v-model="enrollPwd" />
              <div class="aCode">
@@ -69,6 +69,9 @@ export default {
             referrer:'',
             registerPhone:'',
             enrollPwd:'',
+
+            //验证码token
+            messageToken:''
         }
     },
     methods:{
@@ -136,31 +139,39 @@ export default {
                 this.$toast('请输入正确手机号')
                 return;
             }
-            this.$ajax('/sms/sendMsg','post',{LoginID:code,Token:this.token}).then(res=>{
+            let opt ={
+                actionType:'getMessageCode',
+                phone_number:code
+            }
+            let obj = Object.assign(this.$sess('info',opt),this.$sess('verify',this.verify))
+            this.$ajax('/index/message/sendMessage','post',obj).then(res=>{
                 if(res.data.ResultCD != 200){
                     this.$toast.fail(res.data.ErrorMsg);
                     return
                 }
                 this.$toast('验证码已发送到手机上')
+                this.messageToken = res.data.Data.message_token
                 this.countDown()
                 this.disabled = true
                 return;
             })
         },
+        
         forget_pwd(){
-            let opt = {
-                LoginID:this.forgetUser,
-                NewPwd:this.newPwd,
-                Token:this.token,
-                Code:this.authCode
+            let opt={
+                actionType:'forgetPw',
+                account:this.forgetUser,
+                NewsPwd:md5(this.newPwd),
+                message_token:this.messageToken,
+                message_code:this.authCode
             }
-            if(!opt.NewPwd){
+            if(!opt.NewsPwd){
                 this.$toast('密码不能为空')
                 return;
             }
-            this.$ajax('/forget_pwd','post',opt).then(res=>{
-                let data = res.data;
-                if(data.ResultCD =! 200){
+            let obj = Object.assign(this.$sess('info',opt),this.$sess('verify',this.verify))
+            this.$ajax('/index/user/forget_pwd','post',obj).then(res=>{
+                if(res.data.ResultCD =! 200 || !res.data.ResultCD){
                     this.$toast.fail(data.ErrorMsg);
                     return
                 }
@@ -171,26 +182,23 @@ export default {
         },
         reg(){
             let opt = {
-                LoginID:this.registerPhone,
-                LoginPwd:this.enrollPwd,
-                Token:this.token,
-                aCode:this.referrer,
-                Code:this.authCode
-                
+                actionType:'regUser',
+                account:this.registerPhone,
+                password:md5(this.enrollPwd),
+                pid:this.referrer,
+                message_token:this.messageToken,
+                message_code:this.authCode
             }
-            if(!opt.LoginID){
+            if(!opt.account){
                 this.$toast('请输入手机')
                 return;
             }
-            if(!opt.LoginPwd || !opt.ReLoginPwd){
+            if(!opt.password){
                 this.$toast('密码或确认密码不能为空')
                 return;
-                if(opt.LoginPwd != opt.ReLoginPwd){
-                    this.$toast('密码不一致')
-                    return
-                }
             }
-            this.$ajax('/reg','post',opt).then(res=>{
+            let obj = Object.assign(this.$sess('UserInfo',opt),this.$sess('verify',this.verify))
+            this.$ajax('/index/user/reg','post',obj).then(res=>{
                 let data = res.data;
                 if(data.ResultCD == 200){
                     this.$toast.success('注册成功')

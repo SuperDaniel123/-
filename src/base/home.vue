@@ -12,7 +12,7 @@
                 </li>
             </ul>
         </div>
-        <home-first v-if="index == 0" :cat="cat_id"></home-first>
+        <home-first v-if="index == 0" ></home-first>
         <home-other v-if="index != 0" :cat="cat_id"></home-other>
     </div>
 </template>
@@ -76,6 +76,7 @@ export default {
         getNav(){
             this.$ajax('/index/Goods/GoodsCat','post',this.$sess('Condition', {status : 0})).then(res=>{
                 let data = res.data.Data
+                data.unshift({cat_name:'首页',stated:1})
                 this.navList = data
                 this.cat_id = data[0].cat_id
             })

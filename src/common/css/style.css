@@ -65,7 +65,8 @@ textarea {
 /*去掉图片底部默认空白缝隙*/
 img {
     border: 0;
-    max-width:100%;
+    width:100%;
+    height:auto;
     vertical-align: middle;
 }
 /*合并外连线*/

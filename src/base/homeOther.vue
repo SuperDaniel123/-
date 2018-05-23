@@ -7,9 +7,10 @@
                     <div>暂无数据</div>
                 </van-swipe-item>
                 <van-swipe-item v-for="(item,index) in bannerList" :key="index">
-                    <img :src="base + item.img_path" />
+                    <router-link :to="{name:'productDetails',params:{goods_id:item.goods_id}}">
+                        <img :src="base + item.img_path" />
+                    </router-link>
                 </van-swipe-item>
-
             </van-swipe>
         </div>
         <loading v-if="loaded"></loading>
@@ -17,9 +18,10 @@
             <div class="titled bottomRim"><b>NO1</b>每日推荐</div>
               <swiper :options="swiperOption" ref="mySwiper">
                     <!-- slides -->
+                    
                 <swiper-slide v-for="(item,index) in recommend" :key="index" >
                     <div class="box" @click="pushDetails(item.goods_id)">
-                        <img :src="base + item.daily_special_image" />
+                        <img :src="base + item.thumbnail" />
                         <div class="text">
                             <p v-text="item.goods_name"></p>
                             <span>&yen;{{item.now_price}}</span>
@@ -111,7 +113,7 @@ export default {
                 actionType:'special',
                 limit:10,
                 page:1,
-                cat_id:17
+                cat_id:this.cat
             }
             this.$ajax('/index/daily_special/special','post',this.$sess('info',opt)).then(res=>{
                 let data = res.data.Data

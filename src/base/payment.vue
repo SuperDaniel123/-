@@ -18,22 +18,24 @@
                 <div class="msg"><h4>买家留言：</h4><textarea v-model="msg" placeholder="输入你的留言"></textarea></div>
             </div>
             <div class="e-line"></div>
-            <div class="ass" @click="goneAdd">
+            <div class="ass" @click="goneAdd" v-if="address != ''">
                 <p>{{address.province+" "+address.city+" "+address.district+" "+ address.address}}</p>
                 <div class="text"><span>收件人：{{address.shipping_name}}</span><span>电话:{{address.shipping_phone}}</span></div>
                 <i class="fa fa-angle-right"></i>
             </div>
+            <div class="ass"  v-if="address == ''" @click="goneAdd">请添加地址<i class="fa fa-angle-right"></i></div>
             <div class="bottom">
-                <input type="button" value="提交订单" />
+                <input type="button" value="生成订单" @click="confirmOrder"/>
                 <p class="sum">合计:<span>&yen;{{this.allPay}}</span></p>
             </div>
         </div>
+
     </div>
 </template>
 
 <script>
 import iHeader from '../components/i-header'
-import {mapGetters} from 'vuex'
+import {mapGetters,mapMutations} from 'vuex'
 export default {
     components:{
         iHeader
@@ -69,10 +71,18 @@ export default {
             express:0,
             //留言
             msg:'',
-            address:{}
+            address:'',
+            rightShow:true,
+            //支付方式
+            radio:'1',
+            //订单数据
+            OrderData:''
         }
     },
     methods:{
+        ...mapMutations({
+            create:'CREATEORDER'
+        }),
         goneAdd(){
             this.$router.push('/address')
         },
@@ -91,9 +101,51 @@ export default {
                         return;
                     }
                 }
+                
             })
-        }
-
+        },
+        confirmOrder(){
+            this.rightShow = true
+            if(this.OrderData != ''){
+                return;
+            }
+            if(this.address == ''){
+                this.$toast('请填写地址')
+                return
+            }
+            let goodsData = []
+            for(let i = 0; i < this.ComfirmOrders.length; i++){
+                let temp = this.ComfirmOrders[i]
+                let objs = {}
+                objs.goods_id = temp.goods_id
+                objs.goods_name = temp.goods_name
+                objs.goods_quantity = temp.goods_quantity
+                objs.goods_money = +temp.now_price * +temp.goods_quantity
+                objs.goods_thumbnail = temp.thumbnail
+                objs.cat_id = temp.cat_id
+                objs.now_price = temp.now_price
+                goodsData.push(objs)
+            }
+            
+            let opt = {
+                user_id:this.setMID.user_id,
+                order_note:this.msg,
+                shipping_name:this.address.shipping_name,
+                shipping_phone:this.address.shipping_phone,
+                shipping_address:this.address.province+" "+this.address.city+" "+this.address.district+" "+ this.address.address,
+                total_money:this.allPay,
+                is_pay:0,
+                goods_data:goodsData
+            }
+            this.create(opt)
+            this.$router.push({
+                name:'confirmOrder',
+                params:{
+                    status:0,
+                    first:1
+                }
+            })
+        },
     }
 }
 </script>
@@ -159,30 +211,22 @@ export default {
         width:auto;
     }
 }
-.ass{
-    padding:1rem 2rem 1rem 1rem;
-    line-height: 1.5rem;
-    position: relative;
-    .bottomRim;
-    p{
-        font-size:@font1;
-        color:#555555;
-    }
-    .text{
-        display: flex;
-        span{
-            flex:1;
-            color:@font-Sgray;
+
+
+.van-popup--right{
+    width:100%;
+    height:100%;
+    .rightBox{
+        padding:1rem;
+        .top{
+            width:3rem;
+            height:3rem;
+            line-height: 3rem;
+            text-align: center;
+            i.fa{
+                font-size:1.5rem;
+            }
         }
     }
-    .fa{
-        position: absolute;
-        font-size:1.5rem;
-        top:50%;
-        margin-top:-0.75rem;
-        right:1rem;
-        color:@font-Sgray;
-    }
 }
-
 </style>

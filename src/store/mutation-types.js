@@ -15,3 +15,6 @@ export const INDEX_STATE = "INDEX_STATE"
 
 //编辑地址
 export const ADDRESSEDIT = "ADDRESSEDIT"
+
+//生成订单
+export const CREATEORDER = "CREATEORDER"

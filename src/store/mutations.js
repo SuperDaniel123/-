@@ -33,6 +33,11 @@ const mutations = {
     //编辑地址
     [types.ADDRESSEDIT](state,obj){
         state.addressEdit = obj
+    },
+
+    //生成订单
+    [types.CREATEORDER](state,obj){
+        state.createOrder = obj
     }
 }
 

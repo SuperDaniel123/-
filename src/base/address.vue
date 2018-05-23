@@ -2,6 +2,7 @@
     <div>
         <i-header :headline = headline :other="other"></i-header>
         <div class="content">
+            <div class="xieq" v-if="addList.length == 0">还没有地址哦，添加一个吧<i class="fa fa-location-arrow"></i></div>
             <ul class="addList">
                 <li v-for="(item,index) in addList" :key="index">
                     <p>{{item.shipping_name}}<span v-text="item.shipping_name"></span></p>
@@ -162,6 +163,15 @@ export default {
                 }
             }
         }
+    }
+}
+.xieq{
+    text-align: center;
+    font-size:1.1rem;
+    margin-top:3rem;
+    i{
+        margin-left: 0.5rem;
+        color:@red;
     }
 }
 </style>

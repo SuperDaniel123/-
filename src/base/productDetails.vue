@@ -4,6 +4,7 @@
             <div class="backGone" @click="back">
                 <i class="fa fa-angle-left"></i>
             </div>
+            <router-link class="shopCart" to="/shoppingCart"><i class="fa fa-shopping-cart"></i></router-link>
         </div>
         <van-swipe class="banner" :autoplay="3000">
             <van-swipe-item v-for="(item,index) in details.thumbnail" :key="index">
@@ -104,9 +105,11 @@ export default {
             let opt ={
                 user_id:this.setMID.user_id,
                 goods_id:id,
-                goods_quantity:this.count
+                goods_quantity:this.count,
+                OperationType:''
             }
-            this.$ajax('/index/Goods/GoodsDetail','post',this.$sess('Condition',opt)).then(res=>{
+            let obj = Object.assign(this.$sess('Condition',opt),this.$sess('verify',this.verify))
+            this.$ajax('/index/Shopping_Cart/ShoppingCartOperating','post',obj).then(res=>{
                 let data = res.data
                 if(data.ResultCD != 200){
                     this.$toast(data.ErrorMsg)
@@ -140,7 +143,10 @@ export default {
 
         //收藏
         Condition(boolen){
-            console.log(this.setMID)
+            if(this.setMID == '' || !this.setMID){
+                this.$toast('请先登录')
+                return
+            }
             if(boolen){
                 let opt = {
                     user_id:this.setMID.user_id,
@@ -194,7 +200,8 @@ export default {
     width:100%;
     padding:0 1rem;
     box-sizing: border-box;
-    .backGone{
+    .backGone,.shopCart{
+        display: block;
         background: rgba(0, 0, 0, 0.5);
         width:30px;
         height:30px;
@@ -207,6 +214,12 @@ export default {
             font-size:16px;
         }
     }
+    .shopCart{
+        position: absolute;
+        right: 1rem;
+        top:0;
+    }
+    
 }
 
 .homeTop.see{

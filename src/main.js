@@ -28,7 +28,9 @@ import {
     Cell, 
     CellGroup,
     Card,
-    Loading
+    Loading,
+    RadioGroup, 
+    Radio 
 } from 'vant';
 Vue.use(Button).use(Swipe)
 .use(SwipeItem).use(Tab).use(Tabs)
@@ -36,6 +38,7 @@ Vue.use(Button).use(Swipe)
 .use(GoodsActionBigBtn).use(GoodsActionMiniBtn)
 .use(Checkbox).use(CheckboxGroup).use(Area).use(Popup)
 .use(Switch).use(CellGroup).use(Cell).use(Card).use(Loading)
+.use(RadioGroup).use(Radio)
 
 //封装请求参数转换
 Vue.prototype.$sess = function(id,opt){

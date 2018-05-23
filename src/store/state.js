@@ -17,6 +17,9 @@ const state = {
     isLogin:false,
     //首页状态
     indexState:0,
+    //生成订单obj
+    createOrder:''
+    
 }
 
 export default state

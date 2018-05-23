@@ -79,7 +79,13 @@ export default new Router({
           path:'/collectionList',
           name:'collectionList',
           component:resolve => require(['@/base/collectionList'],resolve)
-        }
+        },
+        //生成订单
+        {
+          path:'/confirmOrder/:status?/:first',
+          name:'confirmOrder',
+          component:resolve => require(['@/base/confirmOrder'],resolve)
+        },
       ]
     },
     {
