@@ -33,29 +33,7 @@
             <van-button type="primary" size="large" class="bottonBtn" @click="show = true">立即付款</van-button>
             <!--支付弹窗-->
             <van-popup v-model="show" position="bottom" >
-                <div class="titled bottomRim" style="line-height:4rem; height:4rem;"><b>支付方式</b></div>
-                <van-radio-group v-model="radio">
-                    <van-cell-group>
-                        <!-- <van-cell clickable @click="radio = '1'">
-                            <template slot="title">
-                                <img class="payicon" src="../common/images/weixin.png" />
-                                <span class="van-cell-text">微信支付</span>
-                            </template>
-                            <van-radio name="1" />
-                        </van-cell> -->
-                        <van-cell clickable @click="radio = '2'">
-                            <template slot="title">
-                                <img class="payicon" src="../common/images/aliplay.png" />
-                                <span class="van-cell-text">支付宝支付</span>
-                            </template>
-                            <van-radio name="2" />
-                        </van-cell>
-                    </van-cell-group>
-                </van-radio-group>
-                <div class="o-price">
-                    <p class="all clearfix">需付款<span>&yen;{{+orderDetail.total_money + +orderDetail.deliver_money}}</span></p>
-                </div>
-                <van-button type="primary" size="large" class="payBtn" @click="PaymentChannels">支付</van-button>
+                <pay-popup :sum="sum" :orderNum="orderNum"></pay-popup>
             </van-popup>
         </div>
     </div>
@@ -64,12 +42,21 @@
 <script>
 import iHeader from '../components/i-header'
 import {mapGetters,mapMutations} from 'vuex'
+import payPopup from '../components/payPopup'
 export default {
     components:{
-        iHeader
+        iHeader,
+        payPopup
     },
     computed:{
-        ...mapGetters(['createOrder','verify'])
+        ...mapGetters(['createOrder','verify']),
+        //支付金额
+        sum(){
+            return +this.orderDetail.total_money + +this.orderDetail.deliver_money
+        },
+        orderNum(){
+            return this.orderDetail.orders_number
+        }
     },
     data(){
         return {
@@ -77,7 +64,6 @@ export default {
             base:this.$base,
             headline:'订单详情',
             show:false,
-            radio:'1',
             orderDetail:''
         }
     },
@@ -111,23 +97,15 @@ export default {
                 this.orderDetail = data;
             })
         },
-        PaymentChannels(){
-            
-        }
+        
     }
 }
 </script>
 
 <style lang="less" scoped>
 @import '../common/css/common.less';
-.payBtn{
-    margin-top:4rem;
-}
-.payicon{
-    width:2rem;
-    height:2rem;
-    vertical-align: bottom
-}
+
+
 .orderList{
     padding-left:1rem;
     li{

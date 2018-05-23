@@ -86,6 +86,12 @@ export default new Router({
           name:'confirmOrder',
           component:resolve => require(['@/base/confirmOrder'],resolve)
         },
+        //搜索页
+        {
+          path:'/search',
+          name:'search',
+          component:resolve => require(['@/base/searchPage'],resolve)
+        },
       ]
     },
     {

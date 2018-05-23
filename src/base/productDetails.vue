@@ -50,14 +50,14 @@
                 <van-goods-action-mini-btn icon="like-o" text="收藏"  v-if="!details.is_collection" @click="Condition(true)"/>
                 <van-goods-action-mini-btn icon="like" style="color:#f58125" text="收藏"  v-if="details.is_collection" @click="Condition(false)"/>
                 <van-goods-action-big-btn text="加入购物车" @click="addShoppingCart(details.goods_id)" />
-                <van-goods-action-big-btn text="立即购买" primary />
+                <van-goods-action-big-btn text="立即购买" primary @click="goneOrderForm"/>
             </van-goods-action>
         </div>
     </div>
 </template>
 <script>
 import iHeader from '../components/i-header'
-import { mapGetters } from 'vuex'
+import { mapGetters,mapMutations} from 'vuex'
 export default {
     components:{
         iHeader
@@ -97,27 +97,37 @@ export default {
         }
     },
     methods:{
+        ...mapMutations({
+            order:'COFORDER'
+        }),
         menu() {this.scroll = document.documentElement.scrollTop || document.body.scrollTop;},
         back(){
             this.$router.goBack()
         },
         addShoppingCart(id){
-            let opt ={
-                user_id:this.setMID.user_id,
-                goods_id:id,
-                goods_quantity:this.count,
-                OperationType:''
+            if(this.setMID == '' || !this.setMID){
+                this.whetherMID();
+                return
             }
-            let obj = Object.assign(this.$sess('Condition',opt),this.$sess('verify',this.verify))
-            this.$ajax('/index/Shopping_Cart/ShoppingCartOperating','post',obj).then(res=>{
-                let data = res.data
-                if(data.ResultCD != 200){
-                    this.$toast(data.ErrorMsg)
-                    return;
+            else{
+                let opt ={
+                    user_id:this.setMID.user_id,
+                    goods_id:id,
+                    goods_quantity:this.count,
+                    OperationType:''
                 }
-                this.$toast('添加成功')
-                
-            })
+                let obj = Object.assign(this.$sess('Condition',opt),this.$sess('verify',this.verify))
+                this.$ajax('/index/Shopping_Cart/ShoppingCartOperating','post',obj).then(res=>{
+                    let data = res.data
+                    if(data.ResultCD != 200){
+                        this.$toast(data.ErrorMsg)
+                        return;
+                    }
+                    this.$toast('添加成功')
+                    
+                })
+            }
+            
 
         },
         countNum(id){
@@ -181,11 +191,37 @@ export default {
                     delete this.details['collection_id']
                 })
             }
+        },
+        //判断是否登录
+        whetherMID(){
+            this.$toast('请先登录')
+            setTimeout(()=>{this.$router.push('/login')},1000)
+        },
+        //跳结算
+        goneOrderForm(){
+            if(this.setMID == '' || !this.setMID){
+                this.whetherMID();
+                return
+            }
+            let opt = {
+                addtime:this.details.addtime,
+                cat_id:this.details.cat_id,
+                goods_id:this.details.goods_id,
+                goods_name:this.details.goods_name,
+                goods_quantity:this.count,
+                now_price:this.details.now_price,
+                thumbnail:this.details.rectangle_thumbnail,
+                user_id:this.setMID.user_id
+            }
+            this.order([opt])
+            this.$router.push('/payment')
+
         }
     },
     mounted(){
         window.addEventListener('scroll', this.menu)
-    }
+    },
+    
 }
 </script>
 

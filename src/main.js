@@ -30,7 +30,8 @@ import {
     Card,
     Loading,
     RadioGroup, 
-    Radio 
+    Radio,
+    Search
 } from 'vant';
 Vue.use(Button).use(Swipe)
 .use(SwipeItem).use(Tab).use(Tabs)
@@ -38,7 +39,7 @@ Vue.use(Button).use(Swipe)
 .use(GoodsActionBigBtn).use(GoodsActionMiniBtn)
 .use(Checkbox).use(CheckboxGroup).use(Area).use(Popup)
 .use(Switch).use(CellGroup).use(Cell).use(Card).use(Loading)
-.use(RadioGroup).use(Radio)
+.use(RadioGroup).use(Radio).use(Search)
 
 //封装请求参数转换
 Vue.prototype.$sess = function(id,opt){
@@ -51,7 +52,7 @@ Vue.prototype.$base = 'http://api.zymc.cakcc.cn:88'
 
 
 router.beforeEach((to, from, next) => {
-    let link = ['shoppingCart','address','addressEdit','orderform']
+    let link = ['shoppingCart','address','addressEdit','orderform','collectionList']
     let names = to.name
     let goneLogin = ()=>{
         if(store.getters.setMID == ''){
@@ -65,9 +66,8 @@ router.beforeEach((to, from, next) => {
     }
     if(goneLogin()){
         Toast('请先登录')
-        setTimeout(()=>{
-            next('/login')
-        },1000)
+        next('/login')
+
     }
     next()
     

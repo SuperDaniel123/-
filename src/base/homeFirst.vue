@@ -45,18 +45,7 @@
                 </van-tab>
             </van-tabs>
         </div>
-        <div class="recBox">
-            <div class="titled bottomRim"><b>公司简介</b></div>
-            <p class="otherText"><b>弹个车& 泽银汽车</b></p>
-            <p class="otherText pdc">
-                全国特约一级经销商 2013年至今，弹个车获得了蚂蚁金 服、神州租车、美国华平投资集团、 阿里巴巴、春华资本、招银国际、 红杉资本、晨兴资本、源渡创投等 多个实力雄厚的资方融资。 泽银汽车携手背靠阿里集团蚂蚁金服的弹个车，共同在汽车金融场景内探索新的可能性。
-            </p>
-            <p class="otherText pdc">
-                泽银汽车在取得初步成功后，已完成汽车产业鍊的整合，将持续在汽车后市场中发力，透过集团跨部门整合，开展汽车保险，二手车买卖，汽车配件商城等相关业务。
-            </p>
-            <p class="otherText pdc">公司地址：广东省佛山市顺德区乐从镇乐从社区居民委员会佛山新城裕和路142号金海文化创意中心1702号<br/>联系热线：0757-29381825</p>
-        </div>
-        <div class="footerText">佛山泽银汽车销售服务有限公司  版权所有</div>
+        
     </div>
 </template>
 
@@ -139,7 +128,6 @@ export default {
             this.$ajax('/index/Goods_Advertising/AdvertisingList','post',this.$sess('Condition',opt)).then(res=>{
                 let data = res.data.Data
                 this.bannerList = data;
-                console.log(this.bannerList)
                 this.getRecommend()
             })
         },
@@ -190,25 +178,7 @@ export default {
         vertical-align: middle;
     }
 }
-.recBox{
-    width:100%;
-    .otherText{
-        padding:0 1rem;
-        font-size:12px;
-        line-height: 1.8rem;
-        b{
-            font-size:@font1;
-        }
-    }
-    .otherText.pdc{
-        text-indent: 2rem;
-    }
-}
-.footerText{
-    background: @bgGray;
-    text-align: center;
-    padding:2rem 0;
-}
+
 .empty{
     line-height: 10rem;
     text-align: center;
