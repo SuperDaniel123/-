@@ -14,6 +14,9 @@ export const indexStateS = state => state.indexState
 //编辑地址
 export const addressEdit = state => state.addressEdit
 
-
 //生成订单
 export const createOrder = state => state.createOrder
+
+
+//付款from
+export const payFrom = state => state.payFrom

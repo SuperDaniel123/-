@@ -1,39 +1,56 @@
 <template>
-  <div class="login">
-     <div class="loginTest">
-         <img class="logo" src="@/common/images/logoindex.png" alt="logo" />
-         <div class="input" v-if="state==0">
-             <input type="number" name="userPhone" placeholder="请输入手机" v-model="userPhone" />
-             <input type="password" name="password" placeholder="请输入密码" v-model="password" />
-             <div class="otherOper clearfix"><span @click ="getToken(1)">忘记密码</span><span @click ="getToken(2)">注册账号</span></div>
-             <input type="button" name="Submit" value="登录" @click="getLogin" />
-         </div>
-         <!--忘记密码-->
-         <div class="input" v-if="state==1">
-             <input type="number" placeholder="请输入手机" v-model="forgetUser"/>
-             <div class="aCode">
-                <input type="number" placeholder="请输入验证码" v-model="authCode"/>
-                <input type="button" :class="disabled == false? 'btnCode blue':'btnCode gray'" :disabled = disabled @click="getCode(forgetUser)" v-model="sdCode" />
-             </div>
-             <input type="password" name="password" placeholder="请输入新密码" v-model="newPwd" />
-             <div class="otherOper clearfix"><span @click ="state = 0">登录</span></div>
-             <input type="button" @click="forget_pwd()" name="Submit" value="完成" />
-         </div>
-        <!--注册-->
-         <div class="input" v-if="state==2">
-             <input type="text" placeholder="推荐人，如果没有可不填" v-model="referrer" />
-             <input type="number"  placeholder="请输入手机" v-model="registerPhone" />
-             <input type="password" placeholder="请输入密码" v-model="enrollPwd" />
-             <div class="aCode">
-                <input type="number" placeholder="请输入验证码" v-model="authCode"/>
-                <input type="button" :class="disabled == false? 'btnCode blue':'btnCode gray'" :disabled = disabled @click="getCode(registerPhone)" v-model="sdCode" />
-             </div>
-             <div class="otherOper clearfix"><span @click ="state = 0">登录</span></div>
-             <input type="button" @click="reg()" name="Submit" value="注册" />
-         </div>
-         
-     </div>
-  </div>
+    <div class="login">
+            <div class="loginTest">
+                <img class="logo" src="@/common/images/logoindex.png" alt="logo" />
+                <div class="input" v-if="state==0">
+                    <input type="number" name="userPhone" placeholder="请输入手机" v-model="userPhone" />
+                    <input type="password" name="password" placeholder="请输入密码" v-model="password" />
+                    <div class="otherOper clearfix"><span @click ="getToken(1)">忘记密码</span><span @click ="getToken(2)">注册账号</span></div>
+                    <input type="button" name="Submit" value="登录" @click="getLogin" />
+                </div>
+                <!--忘记密码-->
+                <div class="input" v-if="state==1">
+                    <input type="number" placeholder="请输入手机" v-model="forgetUser"/>
+                    <div class="aCode">
+                        <input type="number" placeholder="请输入验证码" v-model="authCode"/>
+                        <input type="button" :class="disabled == false? 'btnCode blue':'btnCode gray'" :disabled = disabled @click="getCode(forgetUser)" v-model="sdCode" />
+                    </div>
+                    <input type="password" name="password" placeholder="请输入新密码" v-model="newPwd" />
+                    <div class="otherOper clearfix"><span @click ="state = 0">登录</span></div>
+                    <input type="button" @click="forget_pwd()" name="Submit" value="完成" />
+                </div>
+                <!--注册-->
+                <div class="input" v-if="state==2">
+                    <input type="text" placeholder="推荐人，如果没有可不填" v-model="referrer" />
+                    <input type="number"  placeholder="请输入手机" v-model="registerPhone" />
+                    <input type="password" placeholder="请输入密码" v-model="enrollPwd" />
+                    <div class="aCode">
+                        <input type="number" placeholder="请输入验证码" v-model="authCode"/>
+                        <input type="button" :class="disabled == false? 'btnCode blue':'btnCode gray'" :disabled = disabled @click="getCode(registerPhone)" v-model="sdCode" />
+                    </div>
+                    <div class="otherOper clearfix"><span @click ="state = 0">登录</span></div>
+                    <input type="button" @click="reg()" name="Submit" value="注册" />
+                </div>
+
+
+                <!--填写资料-->
+                <van-popup class="popupBox" v-model="show" position="right" >
+                    <div @click="show=false" class="icons"><i class="fa fa-angle-left fa-2x"></i></div>
+                    <img class="logo" src="@/common/images/logoindex.png" alt="logo" style="margin-top:5rem;" />
+                    <div class="input" v-if="state==0">
+                        <input type="type" name="nickname" placeholder="请输入昵称" v-model="nickname" />
+                        <input type="type" name="address" placeholder="请输入地址" v-model="address" />
+                        <div @click="sexShow = true"><input type="text" disabled="disabled" placeholder="请选择性别" v-model="gender" /></div>
+                        <input type="button" name="Submit" value="提交" @click="submitData" />
+                    </div>
+                </van-popup>
+                <van-popup position="bottom"  v-model="sexShow">
+                    <van-picker show-toolbar  title="标题" :columns="columns" @cancel="sexShow = false" @confirm="onConfirm" />
+                </van-popup>
+                
+            </div>
+            
+    </div>
 </template>
 
 <script>
@@ -51,6 +68,8 @@ export default {
     data(){
         return{ 
             token:'',
+            //用户id
+            userID:'',
             userPhone:localStorage.getItem('userName') || '',
             password:'',
             //0 是登录，1是忘记密码, 2是注册
@@ -71,7 +90,20 @@ export default {
             enrollPwd:'',
 
             //验证码token
-            messageToken:''
+            messageToken:'',
+
+            //资料开关
+            show:false,
+            //完善资料
+            nickname:'',
+            address:'',
+            gender:'',
+
+
+            //选择性别
+            sexShow:false,
+            columns: ['男', '女']
+            
         }
     },
     methods:{
@@ -80,6 +112,43 @@ export default {
             verify:'VERIFY',
             isLogin:'IS_LOGIN'
         }),
+        //提交个人资料
+        submitData(){
+            
+            if(this.nickname =="" || this.address =="" || this.gender == ""){
+                alert('资料不能为空')
+                return
+            }
+            let accounts = this.state == 0? this.userPhone : this.registerPhone
+            let passwords = this.state == 0? this.password : this.enrollPwd
+            let opt = {
+                user_id:this.userID,
+                account:accounts,
+                name:this.nickname,
+                gender:this.gender == '女'? 0:1,
+                password:passwords,
+                address:this.address,
+                OperationType:100
+            }
+            this.$ajax('/index/Profile/profile','post',this.$sess('UserInfo',opt)).then(res=>{
+                if(res.data.ResultCD == 200){
+                    this.$toast('提交成功')
+                    this.state = 0
+                    this.sexShow = false;
+                    this.registerPhone = this.password = this.enrollPwd = ""
+                    return
+                }
+                this.$toast(res.data.ResultCD)
+            })
+
+        },
+        //选择性别函数
+        onConfirm(value){
+            this.gender = value
+            this.sexShow = false
+        },
+
+        //登录函数
         getLogin(){
             let opt = {
                 account:this.userPhone,
@@ -101,12 +170,20 @@ export default {
                         localStorage.setItem('userName',this.userPhone)
                         this.verify(JSON.parse(sessionStorage.getItem('MID')))
                         this.setMID(JSON.parse(sessionStorage.getItem('MID')))
-                        console.log(this.$store.getters.verify)
                         // localStorage.setItem('time',Date.parse(new Date()) + (35*60*1000))
                         setTimeout(()=>{
                             this.$router.push({
                                 path:'/'
                             })
+                        },1000)
+                        break;
+                    }
+
+                    case 4005 :{
+                        this.$toast(data.ErrorMsg)
+                        this.userID = data.Data.user_id;
+                        setTimeout(res=>{
+                            this.show = true;
                         },1000)
                         break;
                     }
@@ -201,9 +278,11 @@ export default {
             this.$ajax('/index/user/reg','post',obj).then(res=>{
                 let data = res.data;
                 if(data.ResultCD == 200){
-                    this.$toast.success('注册成功')
-                    this.state = 0;
-                    this.registerPhone = this.enrollPwd = this.referrer = this.authCode = ''
+                    this.$toast.success('注册成功,进一步完善资料')
+                    this.referrer = this.authCode = ''
+                    setTimeout(()=>{
+                        this.sexShow = true
+                    },500)
                     return
                 }
                 this.$toast.fail(data.ErrorMsg);
@@ -280,6 +359,20 @@ export default {
         background: @white;
         color:#666666;
         border:1px solid #cacaca;
+    }
+}
+
+.popupBox{
+    width:100%;
+    height:100%;
+    .icons{
+        width:3rem;
+        height:3rem;
+        text-align: center;
+        line-height: 3rem;
+        i{
+            vertical-align: middle;
+        }
     }
 }
 </style>

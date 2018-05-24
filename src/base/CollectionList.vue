@@ -4,7 +4,7 @@
         <div class="content">
             <ul class="clist">
                 <li v-for="(item,index) in collectList" :key="index">
-                    <router-link :to="{name:'productDetails',params:{goods_id:item.goods_id}}">
+                    <router-link :to="{name:'productDetails',query:{goods_id:item.goods_id}}">
                         <img :src="base + item.goods_info.thumbnail" />
                         <div class="text">
                             <h3 v-text="item.goods_info.goods_name"></h3>
@@ -15,7 +15,6 @@
                 </li>
             </ul>
         </div>
-        
     </div>
 </template>
 

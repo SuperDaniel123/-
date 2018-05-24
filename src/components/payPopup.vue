@@ -20,7 +20,7 @@
             </van-cell-group>
         </van-radio-group>
         <div class="o-price">
-            <p class="gray clearfix">订单号<span>&yen;{{this.orderNum}}</span></p>
+            <p class="gray clearfix">订单号<span>{{this.orderNum}}</span></p>
             <p class="all clearfix">需付款<span>&yen;{{this.sum}}</span></p>
         </div>
         <van-button type="primary" size="large" class="payBtn" @click="PaymentChannels">支付</van-button>
@@ -28,8 +28,14 @@
 </template>
 
 <script>
+import {mapMutations} from 'vuex'
 export default {
     props:['sum','orderNum'],
+    watch:{
+        "radio"(val){
+            console.log(val)
+        }
+    },
     data(){
         return{
             radio:'1'
@@ -39,8 +45,24 @@ export default {
 
     },
     methods:{
+        ...mapMutations({
+            payfrom:'PAYFROM'
+        }),
         PaymentChannels(){
-            
+            let opt = {
+                actionType:'H5payment',
+                orders_number:this.orderNum
+            }
+            let obj = Object.assign(this.$sess('info',opt),this.$sess('verify',this.verify))
+            if(this.radio == 2){
+                this.$ajax('/index/ali_pay/aliPayTrade','post',obj).then(res=>{
+                    let data = res.data
+                    if(data.ResultCD == 200){
+                        this.payfrom(data.Data.aliPay)
+                        this.$router.push('/alipay')
+                    }
+                })
+            }
         }
     }
 }

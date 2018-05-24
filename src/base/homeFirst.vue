@@ -3,7 +3,7 @@
         <loading v-if="loaded"></loading>
         <van-swipe class="banner" :autoplay="3000">
             <van-swipe-item v-for="(item,index) in bannerList" :key="index">
-                <router-link :to="{name:'productDetails',params:{goods_id:item.goods_id}}">
+                <router-link :to="{path:'/productDetails',query:{goods_id:item.goods_id}}">
                     <img :src="base + item.img_path" />
                 </router-link>
             </van-swipe-item>
@@ -12,7 +12,7 @@
             <div class="titled bottomRim"><b>NO1</b>每日推荐<div class="more" @click="gone">更多</div></div>
             <ul class="otherList">
                 <li v-for="(item,index) in recommend" :key="index">
-                    <router-link :to="{name:'productDetails',params:{goods_id:item.goods_id}}">
+                    <router-link :to="{path:'/productDetails',query:{goods_id:item.goods_id}}">
                         <img :src="base + item.rectangle_thumbnail" />
                         <div class="text">
                             <p v-text="item.goods_name"></p>
@@ -32,8 +32,8 @@
                     <div v-if="rushlist.length == 0" class="empty">暂无抢购商品</div>
                     <ul v-if="rushlist.length != 0" class="otherList">
                         <li v-for="(item,index) in rushlist" :key="index">
-                            <router-link :to="{name:'productDetails',params:{goods_id:item.goods_id}}">
-                            <img :src="base + item.thumbnail" />
+                            <router-link :to="{path:'/productDetails',query:{goods_id:item.goods_id}}">
+                            <img :src="imgOptimize(item.thumbnail,item.rectangle_thumbnail)" />
                             <div class="text">
                                 <p v-text="item.goods_name"></p>
                                 <span>&yen; {{item.now_price}}</span>
@@ -97,7 +97,14 @@ export default {
             loaded:false
         }
     },
+    
     methods:{
+        imgOptimize(small,big){
+            if(big == '' || !big){
+                return this.base + small
+            }
+            return this.base + big
+        },
         gone(){
             this.$router.push({
                 name:'proList',

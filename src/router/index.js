@@ -33,7 +33,7 @@ export default new Router({
         },
         //商品详情
         {
-          path:'/productDetails/:goods_id',
+          path:'/productDetails',
           name:'productDetails',
           component:resolve => require(['@/base/productDetails'],resolve)
         },
@@ -91,6 +91,13 @@ export default new Router({
           path:'/search',
           name:'search',
           component:resolve => require(['@/base/searchPage'],resolve)
+        },
+
+        //付款
+        {
+          path:'/alipay',
+          name:'alipay',
+          component:resolve => require(['@/base/alipay'],resolve)
         },
       ]
     },

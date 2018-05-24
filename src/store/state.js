@@ -18,7 +18,9 @@ const state = {
     //首页状态
     indexState:0,
     //生成订单obj
-    createOrder:''
+    createOrder:'',
+    //订单from
+    payFrom:''
     
 }
 

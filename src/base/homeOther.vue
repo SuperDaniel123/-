@@ -7,7 +7,7 @@
                     <div>暂无数据</div>
                 </van-swipe-item>
                 <van-swipe-item v-for="(item,index) in bannerList" :key="index">
-                    <router-link :to="{name:'productDetails',params:{goods_id:item.goods_id}}">
+                    <router-link :to="{name:'productDetails',query:{goods_id:item.goods_id}}">
                         <img :src="base + item.img_path" />
                     </router-link>
                 </van-swipe-item>
@@ -34,7 +34,7 @@
             <div class="titled bottomRim"><b>NO1</b>精选好货</div>
                 <ul class="otherList">
                     <li v-for="(item,index) in goodsList" :key="index" @click="pushDetails(item.goods_id)">
-                        <img :src="base + item.thumbnail" />
+                        <img :src="imgOptimize(item.thumbnail,item.rectangle_thumbnail)" />
                         <div class="text">
                             <p v-text="item.goods_name"></p>
                             <span>&yen; {{item.now_price}}</span>
@@ -93,6 +93,12 @@ export default {
         }
     },
     methods:{
+        imgOptimize(small,big){
+            if(big == '' || !big){
+                return this.base + small
+            }
+            return this.base + big
+        },
         //banner图
         focusMap(){
             let opt = {
@@ -147,7 +153,7 @@ export default {
         pushDetails(id){
             this.$router.push({
                 name:'productDetails',
-                params:{
+                query:{
                     goods_id:id
                 }
             })

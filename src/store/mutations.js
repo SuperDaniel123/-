@@ -38,6 +38,11 @@ const mutations = {
     //生成订单
     [types.CREATEORDER](state,obj){
         state.createOrder = obj
+    },
+
+    //支付from
+    [types.PAYFROM](state,str){
+        state.payFrom = str
     }
 }
 

@@ -18,3 +18,5 @@ export const ADDRESSEDIT = "ADDRESSEDIT"
 
 //生成订单
 export const CREATEORDER = "CREATEORDER"
+
+export const PAYFROM = "PAYFROM"

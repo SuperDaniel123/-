@@ -8,6 +8,7 @@ import '@/common/font/font-awesome/css/font-awesome.min.css'
 import 'swiper/dist/css/swiper.css'
 import '@/common/js/axios'
 import store from './store'
+import jsons from './common/js/information.json'
 Vue.config.productionTip = false
 import { 
     Button,
@@ -31,7 +32,8 @@ import {
     Loading,
     RadioGroup, 
     Radio,
-    Search
+    Search,
+    Picker
 } from 'vant';
 Vue.use(Button).use(Swipe)
 .use(SwipeItem).use(Tab).use(Tabs)
@@ -39,7 +41,7 @@ Vue.use(Button).use(Swipe)
 .use(GoodsActionBigBtn).use(GoodsActionMiniBtn)
 .use(Checkbox).use(CheckboxGroup).use(Area).use(Popup)
 .use(Switch).use(CellGroup).use(Cell).use(Card).use(Loading)
-.use(RadioGroup).use(Radio).use(Search)
+.use(RadioGroup).use(Radio).use(Search).use(Picker).use(jsons)
 
 //封装请求参数转换
 Vue.prototype.$sess = function(id,opt){
@@ -50,6 +52,7 @@ Vue.prototype.$sess = function(id,opt){
 
 Vue.prototype.$base = 'http://api.zymc.cakcc.cn:88'
 
+Vue.prototype.$datas = jsons
 
 router.beforeEach((to, from, next) => {
     let link = ['shoppingCart','address','addressEdit','orderform','collectionList']

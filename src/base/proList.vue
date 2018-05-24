@@ -4,7 +4,7 @@
         <div class="content">
             <van-list v-model="loading" :finished="finished" @load="onLoad" :offset="200">
                 <div class="alone" v-for="(item,index) in ddlist" :key="index">
-                    <router-link :to="{name:'productDetails',params:{goods_id:item.goods_id}}">
+                    <router-link :to="{name:'productDetails',query:{goods_id:item.goods_id}}">
                     <img :src="base + item.thumbnail" />
                     <div class="text">
                        <h2>{{item.goods_name}}</h2>

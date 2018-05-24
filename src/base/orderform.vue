@@ -3,7 +3,7 @@
         <i-header :headline = headline></i-header>
         <div class="content">
             <ul class="orderList" v-for="(item,index) in orderList" :key="index">
-                <h3 class="clearfix"><img src="../common/images/userhead.png" />爱车汇<span v-text="item.is_pay == 0? '未付款':'已付款'"></span></h3>
+                <h3 class="clearfix"><img :src="userhead" />{{conpany}}<span v-text="item.is_pay == 0? '未付款':'已付款'"></span></h3>
                 <li v-for="(items,indexs) in item.goods_data" :key="indexs">
                     <div @click="pushDetails(item)">
                         <van-card :title="items.goods_name" desc="衣服" :num="items.goods_quantity" :price="items.goods_money" :thumb="base + items.goods_thumbnail"  >
@@ -39,7 +39,13 @@ export default {
         payPopup
     },
     computed:{
-        ...mapGetters(['setMID','verify'])
+        ...mapGetters(['setMID','verify']),
+        conpany(){
+            return this.$datas.data.name
+        },
+        userhead(){
+            return this.$datas.data.headPortrait
+        }
     },
     created(){
         this.getOrderList()
@@ -57,7 +63,7 @@ export default {
             payObj:{
                 sum:0,
                 orderNum:0
-            }
+            },
         }
     },
     methods:{

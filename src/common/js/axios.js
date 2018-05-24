@@ -3,7 +3,7 @@ import axios from "axios"
 import qs from "qs"
 axios.defaults.baseURL='/';
 
-axios.defaults.retry = 4;
+axios.defaults.retry = 1;
 axios.defaults.retryDelay = 1000;
 axios.defaults.shouldRetry = (error) => true;
 

@@ -77,6 +77,7 @@ export default {
     },
     created(){
         this.getDetails()
+        console.log(this.$route.query.user_id)
         
     },
     data(){
@@ -84,7 +85,7 @@ export default {
             //域名
             base:this.$base,
             //商品id
-            goodsID:this.$route.params.goods_id,
+            goodsID:this.$route.query.goods_id,
             //滚动距离
             scroll:'',
             //滚动头部切换样式

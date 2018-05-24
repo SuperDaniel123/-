@@ -20,7 +20,7 @@
         </div>
         <div class="bottom">
             <van-checkbox v-model="checked" @change="checkAll">全选</van-checkbox>
-            <input type="button" value="结算"  @click="gonePay"/>
+            <div class="button" @click="gonePay">结算</div>
             <p class="sum">合计:<span>&yen;{{sumPri}}</span></p>
         </div>
         
@@ -37,6 +37,7 @@ export default {
     },
     created(){
         this.getCartList()
+        console.log(this.$datas)
     },
     computed:{
         ...mapGetters(['setMID','verify'])
@@ -262,7 +263,7 @@ export default {
     .van-checkbox{
         display: inline-block;
     }
-    input[type='button']{
+    .button{
         float: right;
         width:100px;
         background: @org;
