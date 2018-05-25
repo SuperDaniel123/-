@@ -9,22 +9,20 @@
 
 import {mapGetters} from 'vuex'
 export default {
-    created(){
-      
-    },
     data(){
         return {
         }
     },
     mounted(){
-        let fo = document.getElementById('alipaysubmit')
-        fo.target = '_blank';
+        // let fo = document.getElementById('alipaysubmit')
+        // fo.target = '_blank';
         document.forms['alipaysubmit'].submit();
 
     },
     methods:{
         back(){
-            this.$router.goBack()
+            this.verify(JSON.parse(localStorage.getItem('MID')))
+            this.$router.push('/orderform')
         }
         
     },

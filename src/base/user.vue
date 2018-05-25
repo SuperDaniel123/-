@@ -40,7 +40,8 @@ export default {
         logout(){
             this.$toast('退出成功')
             setTimeout(()=>{
-                sessionStorage.removeItem('MID');
+                localStorage.removeItem('MID');
+                localStorage.removeItem('time')
                 window.location.reload();
             },1000)
         },

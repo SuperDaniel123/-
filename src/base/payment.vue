@@ -25,7 +25,7 @@
             </div>
             <div class="ass"  v-if="address == ''" @click="goneAdd">请添加地址<i class="fa fa-angle-right"></i></div>
             <div class="bottom">
-                <input type="button" value="生成订单" @click="confirmOrder"/>
+                <div class="button"  @click="confirmOrder">生成订单</div>
                 <p class="sum">合计:<span>&yen;{{this.allPay}}</span></p>
             </div>
         </div>

@@ -21,7 +21,8 @@
                 </div>
                 <!--注册-->
                 <div class="input" v-if="state==2">
-                    <input type="text" placeholder="推荐人，如果没有可不填" v-model="referrer" />
+                    <input type="text" placeholder="推荐人，如果没有可不填" v-model="referrer" disabled v-if="!disableds"/>
+                    <input type="text" placeholder="推荐人，如果没有可不填" v-model="referrer" v-if="disableds"/>
                     <input type="number"  placeholder="请输入手机" v-model="registerPhone" />
                     <input type="password" placeholder="请输入密码" v-model="enrollPwd" />
                     <div class="aCode">
@@ -65,6 +66,11 @@ export default {
     beforeCreate(){
         localStorage.removeItem('time')
     },
+    computed:{
+        disableds(){
+            return this.referrer == ''? true:false
+        }
+    },
     data(){
         return{ 
             token:'',
@@ -85,7 +91,7 @@ export default {
             forgetUser:'',
             newPwd:'',
             //注册
-            referrer:'',
+            referrer:localStorage.getItem('referrer')||"",
             registerPhone:'',
             enrollPwd:'',
 
@@ -166,11 +172,11 @@ export default {
                 switch(data.ResultCD){
                     case 200 :{
                         this.$toast('登录成功')
-                        sessionStorage.setItem('MID',JSON.stringify(data.Data))
+                        localStorage.setItem('MID',JSON.stringify(data.Data))
                         localStorage.setItem('userName',this.userPhone)
-                        this.verify(JSON.parse(sessionStorage.getItem('MID')))
-                        this.setMID(JSON.parse(sessionStorage.getItem('MID')))
-                        // localStorage.setItem('time',Date.parse(new Date()) + (35*60*1000))
+                        this.verify(JSON.parse(localStorage.getItem('MID')))
+                        this.setMID(JSON.parse(localStorage.getItem('MID')))
+                        localStorage.setItem('time',Date.parse(new Date()) + (45*60*1000))
                         setTimeout(()=>{
                             this.$router.push({
                                 path:'/'
@@ -262,7 +268,7 @@ export default {
                 actionType:'regUser',
                 account:this.registerPhone,
                 password:md5(this.enrollPwd),
-                pid:this.referrer,
+                p_account:this.referrer,
                 message_token:this.messageToken,
                 message_code:this.authCode
             }
@@ -279,6 +285,7 @@ export default {
                 let data = res.data;
                 if(data.ResultCD == 200){
                     this.$toast.success('注册成功,进一步完善资料')
+                    sessionStorage.removeItem('referrer')
                     this.referrer = this.authCode = ''
                     setTimeout(()=>{
                         this.sexShow = true

@@ -57,6 +57,8 @@ Vue.prototype.$datas = jsons
 router.beforeEach((to, from, next) => {
     let link = ['shoppingCart','address','addressEdit','orderform','collectionList']
     let names = to.name
+    let isDate = Date.parse(new Date())
+    let loginTime = localStorage.getItem('time')
     let goneLogin = ()=>{
         if(store.getters.setMID == ''){
             for(let i = 0; i <link.length; i++){
@@ -67,6 +69,21 @@ router.beforeEach((to, from, next) => {
         }
         return false
     }
+    if(loginTime){
+        for(let i = 0; i <link.length; i++){
+            if(link[i] == names){
+                if(isDate > loginTime){
+                    Toast('登录超时，请重新登陆')
+                    localStorage.removeItem('time')
+                    localStorage.removeItem('MID')
+                    next('/login')
+                    return;
+                }
+            }
+        }
+        
+    }
+    
     if(goneLogin()){
         Toast('请先登录')
         next('/login')

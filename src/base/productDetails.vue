@@ -77,8 +77,6 @@ export default {
     },
     created(){
         this.getDetails()
-        console.log(this.$route.query.user_id)
-        
     },
     data(){
         return{
@@ -92,7 +90,6 @@ export default {
             style:0,
             //购买数量
             count:1,
-
             //详情数据
             details:''
         }
@@ -148,7 +145,7 @@ export default {
             let opt = this.setMID == "" ? {goods_id:this.goodsID} : {user_id:this.setMID.user_id, goods_id:this.goodsID}
             this.$ajax('/index/Goods/GoodsDetail','post',this.$sess('Condition',opt)).then(res=>{
                 let data = res.data.Data
-                this.details = data
+                this.details = data;
             })
         },
 
@@ -211,16 +208,18 @@ export default {
                 goods_name:this.details.goods_name,
                 goods_quantity:this.count,
                 now_price:this.details.now_price,
-                thumbnail:this.details.rectangle_thumbnail,
+                thumbnail:this.details.thumbnail[0].picture_path,
                 user_id:this.setMID.user_id
             }
             this.order([opt])
             this.$router.push('/payment')
-
         }
     },
     mounted(){
         window.addEventListener('scroll', this.menu)
+        if(this.$route.query.user_id){
+            sessionStorage.setItem('referrer',this.$route.query.user_id)
+        }
     },
     
 }

@@ -1,11 +1,11 @@
 const state = {
     //MID
-    MID:JSON.parse(sessionStorage.getItem('MID'))||'',
+    MID:JSON.parse(localStorage.getItem('MID'))||'',
     //登录验证带参数
-    verify:sessionStorage.getItem('MID') == undefined? {} : {
+    verify:localStorage.getItem('MID') == undefined? {} : {
         actionType:'verify',
-        session_id:JSON.parse(sessionStorage.getItem('MID')).session_id,
-        user_id:JSON.parse(sessionStorage.getItem('MID')).user_id
+        session_id:JSON.parse(localStorage.getItem('MID')).session_id,
+        user_id:JSON.parse(localStorage.getItem('MID')).user_id
     },
 
     //确认订单列表

@@ -37,7 +37,7 @@ export default {
     },
     created(){
         this.getCartList()
-        console.log(this.$datas)
+        // console.log(this.$datas)
     },
     computed:{
         ...mapGetters(['setMID','verify'])

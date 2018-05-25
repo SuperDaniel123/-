@@ -67,13 +67,13 @@ let api = function(url,type,options){
             instance.post(url,qs.stringify(opt))
 
             .then(response => {
-                if(response.data.ResultCD == 'E999'){
-                    sessionStorage.removeItem('MID')
-                    sessionStorage.removeItem('UID')
-                    alert('登录超时')
-                    location.reload()
-                    return;
-                }
+                // if(response.data.ResultCD == 'E999'){
+                //     sessionStorage.removeItem('MID')
+                //     sessionStorage.removeItem('UID')
+                //     alert('登录超时')
+                //     location.reload()
+                //     return;
+                // }
                 resolve(response)
             })
             .catch(error => {
