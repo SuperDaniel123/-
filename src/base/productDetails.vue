@@ -45,25 +45,43 @@
                 <div v-html="details.content"></div>
             </div>
             <div style="height:50px;"></div>
-            <van-goods-action>
+            <van-goods-action v-if="setMID.user_grade == 0">
                 <van-goods-action-mini-btn icon="chat" text="客服" />
                 <van-goods-action-mini-btn icon="like-o" text="收藏"  v-if="!details.is_collection" @click="Condition(true)"/>
                 <van-goods-action-mini-btn icon="like" style="color:#f58125" text="收藏"  v-if="details.is_collection" @click="Condition(false)"/>
                 <van-goods-action-big-btn text="加入购物车" @click="addShoppingCart(details.goods_id)" />
                 <van-goods-action-big-btn text="立即购买" primary @click="goneOrderForm"/>
             </van-goods-action>
+            <div class="addCart" @click="addShoppingCart(details.goods_id)" v-if="setMID.user_grade == 1">
+                <i class="fa fa-cart-plus"></i>
+            </div>
+            <van-goods-action v-if="setMID.user_grade == 1">
+                <van-goods-action-mini-btn icon="chat" text="客服" />
+                <van-goods-action-mini-btn icon="like-o" text="收藏"  v-if="!details.is_collection" @click="Condition(true)"/>
+                <van-goods-action-mini-btn icon="like" style="color:#f58125" text="收藏"  v-if="details.is_collection" @click="Condition(false)"/>
+                <van-goods-action-big-btn :text="'自购省¥'+details.rebate_money" primary @click="goneOrderForm" />
+                <van-goods-action-big-btn :text="'分享赚¥'+details.rebate_money" @click="show = true"/>
+            </van-goods-action>
+            <van-popup style="height:100%;background:none" v-model="show" position="bottom" :overlay="true">
+                <share @childByValue="closeShare" :titles="'分享赚¥'+details.rebate_money" :describe="shareDes" ></share>
+            </van-popup>
         </div>
     </div>
 </template>
 <script>
-import iHeader from '../components/i-header'
+import iHeader from '@/components/i-header'
 import { mapGetters,mapMutations} from 'vuex'
+import share from '@/components/share'
 export default {
     components:{
-        iHeader
+        iHeader,
+        share
     },
     computed:{
-        ...mapGetters(['setMID','verify'])
+        ...mapGetters(['setMID','verify']),
+        shareDes(){
+            return "只要你的朋友通过你的分享购买商品，你就能赚到至少"+this.details.rebate_money+"元的分润收入哦~"
+        }
     },
     watch:{
         'scroll'(val,old){
@@ -91,7 +109,9 @@ export default {
             //购买数量
             count:1,
             //详情数据
-            details:''
+            details:'',
+            //分享图层show
+            show:false
         }
     },
     methods:{
@@ -121,7 +141,7 @@ export default {
                         this.$toast(data.ErrorMsg)
                         return;
                     }
-                    this.$toast('添加成功')
+                    this.$toast('添加购物车成功')
                     
                 })
             }
@@ -213,6 +233,10 @@ export default {
             }
             this.order([opt])
             this.$router.push('/payment')
+        },
+        //关闭分享
+        closeShare(val){
+            this.show = val
         }
     },
     mounted(){
@@ -380,5 +404,21 @@ export default {
         margin-bottom: 1rem;
     }
     
+}
+.addCart{
+    background: rgba(0, 0, 0, 0.5);
+    width:35px;
+    height:35px;
+    text-align: center;
+    line-height: 35px;
+    position: fixed;
+    bottom:60px;
+    right:1rem;
+    border-radius: 50%;
+    color:#fff;
+    i.fa{
+        font-size:20px;
+        vertical-align: middle;
+    }
 }
 </style>
