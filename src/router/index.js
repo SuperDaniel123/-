@@ -99,6 +99,36 @@ export default new Router({
           name:'alipay',
           component:resolve => require(['@/base/alipay'],resolve)
         },
+        //我的店铺
+        {
+          path:'/storeOther',
+          name:'storeOther',
+          component:resolve => require(['@/base/storeOther'],resolve)
+        },
+        //明细or记录
+        {
+          path:'/recordDetails/:type',
+          name:'recordDetails',
+          component:resolve => require(['@/base/recordDetails'],resolve)
+        },
+        //提现 
+        {
+          path:'/withdrawDeposit',
+          name:'withdrawDeposit',
+          component:resolve => require(['@/base/withdrawDeposit'],resolve)
+        },
+        //银行卡
+        {
+          path:'/bankCard',
+          name:'bankCard',
+          component:resolve => require(['@/base/bankCard'],resolve)
+        },
+        //添加银行卡
+        {
+          path:'/addBankCard',
+          name:'addBankCard',
+          component:resolve => require(['@/base/addBankCard'],resolve)
+        },
       ]
     },
     {

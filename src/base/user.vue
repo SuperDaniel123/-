@@ -11,11 +11,12 @@
             </div>
         </div>
         <div class="e-line"></div>
-        <!-- <van-cell-group>
-            <van-cell title="爱车档案" is-link />
-            <van-cell title="个人信息" is-link />
+        <van-cell-group v-if="setMID.user_grade == 1">
+            <van-cell title="我的店铺" is-link to="/storeOther" />
+            <!-- <van-cell title="爱车档案" is-link />
+            <van-cell title="个人信息" is-link /> -->
         </van-cell-group>
-        <div class="e-line"></div> -->
+        <div class="e-line"></div>
         <van-cell-group>
             <van-cell title="我的订单" is-link to="/orderform"/>
             <van-cell title="购物车" is-link to="/shoppingCart" />

@@ -91,7 +91,7 @@ export default {
             forgetUser:'',
             newPwd:'',
             //注册
-            referrer:localStorage.getItem('referrer')||"",
+            referrer:sessionStorage.getItem('referrer')||"",
             registerPhone:'',
             enrollPwd:'',
 

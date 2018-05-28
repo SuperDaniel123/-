@@ -54,7 +54,7 @@ export default {
             clipboard.on('success', e => {  
                 this.$toast('成功复制到剪切板')
                 clipboard.destroy()  
-            })  
+            })
             clipboard.on('error', e => {  
                 this.$toast('该浏览器不支持自动复制')
                 clipboard.destroy()  

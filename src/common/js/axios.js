@@ -67,13 +67,12 @@ let api = function(url,type,options){
             instance.post(url,qs.stringify(opt))
 
             .then(response => {
-                // if(response.data.ResultCD == 'E999'){
-                //     sessionStorage.removeItem('MID')
-                //     sessionStorage.removeItem('UID')
-                //     alert('登录超时')
-                //     location.reload()
-                //     return;
-                // }
+                if(response.data.ResultCD == '4010'){
+                    localStorage.removeItem('MID')
+                    alert('登录错误，请重新登录')
+                    this.$router.push('login')
+                    return;
+                }
                 resolve(response)
             })
             .catch(error => {

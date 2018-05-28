@@ -45,7 +45,7 @@
                 <div v-html="details.content"></div>
             </div>
             <div style="height:50px;"></div>
-            <van-goods-action v-if="setMID.user_grade == 0">
+            <van-goods-action v-if="setMID.user_grade != 1">
                 <van-goods-action-mini-btn icon="chat" text="客服" />
                 <van-goods-action-mini-btn icon="like-o" text="收藏"  v-if="!details.is_collection" @click="Condition(true)"/>
                 <van-goods-action-mini-btn icon="like" style="color:#f58125" text="收藏"  v-if="details.is_collection" @click="Condition(false)"/>
