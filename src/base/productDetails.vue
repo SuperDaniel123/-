@@ -63,7 +63,7 @@
                 <van-goods-action-big-btn :text="'分享赚¥'+details.rebate_money" @click="show = true"/>
             </van-goods-action>
             <van-popup style="height:100%;background:none" v-model="show" position="bottom" :overlay="true">
-                <share @childByValue="closeShare" :titles="'分享赚¥'+details.rebate_money" :describe="shareDes" ></share>
+                <share @childByValue="closeShare" :titles="'分享赚¥'+details.rebate_money" :describe="shareDes" typed="0" ></share>
             </van-popup>
         </div>
     </div>
@@ -81,6 +81,9 @@ export default {
         ...mapGetters(['setMID','verify']),
         shareDes(){
             return "只要你的朋友通过你的分享购买商品，你就能赚到至少"+this.details.rebate_money+"元的分润收入哦~"
+        },
+        special(){
+            return this.$route.query.special ? 'true':'false'
         }
     },
     watch:{
@@ -122,9 +125,16 @@ export default {
         back(){
             this.$router.goBack()
         },
+
+
+        //加入购物车
         addShoppingCart(id){
             if(this.setMID == '' || !this.setMID){
                 this.whetherMID();
+                return
+            }
+            if(this.special){
+                this.$toast('该商品不支持该功能')
                 return
             }
             else{
@@ -146,8 +156,8 @@ export default {
                 })
             }
             
-
         },
+        
         countNum(id){
             //0为减，1为加
             if(!id){
@@ -171,8 +181,13 @@ export default {
 
         //收藏
         Condition(boolen){
+            
             if(this.setMID == '' || !this.setMID){
                 this.$toast('请先登录')
+                return
+            }
+            if(this.special){
+                this.$toast('该商品不支持该功能')
                 return
             }
             if(boolen){

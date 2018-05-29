@@ -129,6 +129,18 @@ export default new Router({
           name:'addBankCard',
           component:resolve => require(['@/base/addBankCard'],resolve)
         },
+        //成为店主页
+        {
+          path:'/asOwner',
+          name:'asOwner',
+          component:resolve => require(['@/base/asOwner'],resolve)
+        },
+        //活动商品 
+        {
+          path:'/specialPro',
+          name:'specialPro',
+          component:resolve => require(['@/base/specialPro'],resolve)
+        },
       ]
     },
     {

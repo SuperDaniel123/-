@@ -7,7 +7,7 @@
             <li class="tag-read" @click="copy" :data-clipboard-text="shareLink"><i class="fa fa-link"></i><span>链接分享</span></li>
             <li @click="qrcode"><i class="fa fa-qrcode"></i><span>二维码分享</span></li>
         </ul>
-        <van-popup v-model="show"><div ref="qrcode" id="qrcode"><span class="text">复制图片分享</span></div></van-popup>
+        <van-popup v-model="show"><div ref="qrcode" id="qrcode"></div><span class="text">复制图片分享</span></van-popup>
         
     </div>
 </template>
@@ -37,15 +37,16 @@ export default {
             show:false
         }
     },
-    props:['titles','describe'],
+    //typed:1是店铺，0是商品
+    props:['titles','describe','typed'],
     computed:{
         ...mapGetters(['setMID']),
         shareLink(){
+            if(this.typed == 1){
+                return this.storeShare()
+            }
             return window.location.href + "&user_id=" + this.setMID.account
         }
-    },
-    mounted(){
-        console.log(this.setMID)
     },
     methods:{
         //复制链接
@@ -78,6 +79,11 @@ export default {
         //关闭
         childClick(){
             this.$emit('childByValue', false)
+        },
+        storeShare(){
+            let urls = window.location.href.split("#",1)[0]
+            let link = urls + "#/asOwner?user_id=" + this.setMID.account
+            return link
         }
     }
 }
@@ -92,6 +98,8 @@ export default {
             font-size:1.5rem;
         }
     }
+    width:100%;
+    box-sizing: border-box;
     position: fixed;
     bottom:0;
     background: #fff;

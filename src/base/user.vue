@@ -11,8 +11,8 @@
             </div>
         </div>
         <div class="e-line"></div>
-        <van-cell-group v-if="setMID.user_grade == 1">
-            <van-cell title="我的店铺" is-link to="/storeOther" />
+        <van-cell-group v-if="shopUrl != false">
+            <van-cell title="我的店铺" is-link :to="shopUrl" />
             <!-- <van-cell title="爱车档案" is-link />
             <van-cell title="个人信息" is-link /> -->
         </van-cell-group>
@@ -35,7 +35,13 @@
 import { mapGetters } from 'vuex'
 export default {
     computed:{
-        ...mapGetters(['setMID'])
+        ...mapGetters(['setMID']),
+        shopUrl(){
+            if(!this.setMID){
+                return false;
+            }
+            return this.setMID.user_grade == 1? '/storeOther' : '/asOwner'
+        }
     },
     methods:{
         logout(){

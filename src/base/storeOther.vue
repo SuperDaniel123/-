@@ -3,7 +3,7 @@
         <i-header :headline = headline></i-header>
         <div class="content">
             <van-cell-group>
-                <van-cell title="我的店铺" is-link value="分享我的店铺" />
+                <van-cell title="我的店铺" is-link value="分享我的店铺" @click="show = true"/>
             </van-cell-group>
             <ul class="storeFigure">
                 <li>可提取金额：<span>{{(+userInformation.total_income).toFixed(2)}}元</span></li>
@@ -18,15 +18,20 @@
                 <van-cell title="我的银行卡" is-link :to="{name:'bankCard'}"/>
             </van-cell-group>
         </div>
+        <van-popup style="height:100%;background:none" v-model="show" position="bottom" :overlay="true">
+            <share @childByValue="closeShare" titles="分享店铺" describe="分享店铺赚更多" typed="1"></share>
+        </van-popup>
     </div>
 </template>
 
 <script>
 import iHeader from '@/components/i-header'
 import { mapGetters } from 'vuex'
+import share from '@/components/share'
 export default {
     components:{
-        iHeader
+        iHeader,
+        share
     },
     computed:{
         ...mapGetters(['setMID','verify'])
@@ -34,10 +39,16 @@ export default {
     created(){
         this.profile()
     },
+    mounted(){
+        if(this.$route.query.user_id){
+            sessionStorage.setItem('referrer',this.$route.query.user_id)
+        }
+    },
     data(){
         return {
             headline:'我的店铺',
-            userInformation:''
+            userInformation:'',
+            show:false
         }
     },
     methods:{
@@ -51,6 +62,9 @@ export default {
             this.$ajax('/index/Profile/profile','post',this.$sess('UserInfo',opt)).then(res=>{
                 this.userInformation = res.data.Data
             })
+        },
+        closeShare(val){
+            this.show = val
         }
     }
 }
