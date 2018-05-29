@@ -54,12 +54,13 @@ export default {
     },
     created(){
         this.getList()
+        this.profile()
     },
     data(){
         return{
             headline:'提现',
             sum:'',
-            inAll:7788.00,
+            inAll:0,
             sms:'',
             //银行卡列表
             bankList:[],
@@ -76,7 +77,8 @@ export default {
             show:false,
 
             //银行卡资料
-            cardData:{}
+            cardData:{},
+            //跟人信息
         }
     },
     methods:{
@@ -87,7 +89,17 @@ export default {
             this.show = false;
             this.cardData = val
         },
+        profile(){
+            let opt = {
+                user_id:this.setMID.user_id,
+                account:this.setMID.account,
+                OperationType:1000
+            }
 
+            this.$ajax('/index/Profile/profile','post',this.$sess('UserInfo',opt)).then(res=>{
+                this.inAll = +(res.data.Data.total_income)
+            })
+        },
         //计时器
         countDown(){
             var i = 60
@@ -145,6 +157,10 @@ export default {
         },
         
         withdrawPort(){
+            if(this.CodeToken == ""){
+                this.$toast('请重新获取验证码')
+                return;
+            }
             let opt = {
                 actionType:'addApply',
                 user_id:this.setMID.user_id,
@@ -156,10 +172,13 @@ export default {
                 message_code:this.sms
             }
             let obj = Object.assign(this.$sess('info',opt),this.$sess('verify',this.verify))
-            this.$ajax('/index/message/sendMessage','post',this.$sess('info',opt)).then(res=>{
+            this.$ajax('/index/withdraw/applyWithdraw','post',obj).then(res=>{
                 let data = res.data
                 if(data.ResultCD == 200){
                     this.$toast('提现成功')
+                    setTimeout(()=>{
+                        this.$router.goBack()
+                    },1000)
                     return;
                 }
                 this.$toast(data.ErrorMsg)

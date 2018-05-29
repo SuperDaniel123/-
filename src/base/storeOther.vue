@@ -6,8 +6,8 @@
                 <van-cell title="我的店铺" is-link value="分享我的店铺" />
             </van-cell-group>
             <ul class="storeFigure">
-                <li>可提取金额：<span>7856.00元</span></li>
-                <li>总额：<span>7856.00元</span></li>
+                <li>可提取金额：<span>{{(+userInformation.total_income).toFixed(2)}}元</span></li>
+                <li>总额：<span>{{(+userInformation.total_income + +userInformation.pre_income).toFixed(2)}}元</span></li>
             </ul>
             <div class="e-line"></div>
             <van-cell-group>
@@ -23,13 +23,34 @@
 
 <script>
 import iHeader from '@/components/i-header'
+import { mapGetters } from 'vuex'
 export default {
     components:{
         iHeader
     },
+    computed:{
+        ...mapGetters(['setMID','verify'])
+    },
+    created(){
+        this.profile()
+    },
     data(){
         return {
-            headline:'我的店铺'
+            headline:'我的店铺',
+            userInformation:''
+        }
+    },
+    methods:{
+        profile(){
+            let opt = {
+                user_id:this.setMID.user_id,
+                account:this.setMID.account,
+                OperationType:1000
+            }
+
+            this.$ajax('/index/Profile/profile','post',this.$sess('UserInfo',opt)).then(res=>{
+                this.userInformation = res.data.Data
+            })
         }
     }
 }
