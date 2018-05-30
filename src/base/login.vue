@@ -37,8 +37,11 @@
                 <!--填写资料-->
                 <van-popup class="popupBox" v-model="show" position="right" >
                     <div @click="show=false" class="icons"><i class="fa fa-angle-left fa-2x"></i></div>
-                    <img class="logo" src="@/common/images/logoindex.png" alt="logo" style="margin-top:5rem;" />
-                    <div class="input" v-if="state==0">
+                    <van-uploader :after-read="onRead">
+                        <img class="portrait" v-if="portrait!=''" :src="portrait" alt="logo" style="margin-top:5rem;" />
+                        <img class="portrait" v-if="portrait==''" src="@/common/images/user.png" alt="logo" style="margin-top:5rem;" />
+                    </van-uploader>
+                    <div class="input" v-if="state!=1">
                         <input type="type" name="nickname" placeholder="请输入昵称" v-model="nickname" />
                         <input type="type" name="address" placeholder="请输入地址" v-model="address" />
                         <div @click="sexShow = true"><input type="text" disabled="disabled" placeholder="请选择性别" v-model="gender" /></div>
@@ -108,7 +111,9 @@ export default {
 
             //选择性别
             sexShow:false,
-            columns: ['男', '女']
+            columns: ['男', '女'],
+
+            portrait:''
             
         }
     },
@@ -118,6 +123,11 @@ export default {
             verify:'VERIFY',
             isLogin:'IS_LOGIN'
         }),
+        //上传头像
+        onRead(file) {
+            console.log(file)
+            this.portrait = file.content
+        },
         //提交个人资料
         submitData(){
             
@@ -134,14 +144,17 @@ export default {
                 gender:this.gender == '女'? 0:1,
                 password:passwords,
                 address:this.address,
-                OperationType:100
+                OperationType:100,
+                portrait:this.portrait
             }
             this.$ajax('/index/Profile/profile','post',this.$sess('UserInfo',opt)).then(res=>{
                 if(res.data.ResultCD == 200){
                     this.$toast('提交成功')
                     this.state = 0
-                    this.sexShow = false;
+                    this.show = false;
                     this.registerPhone = this.password = this.enrollPwd = ""
+                    sessionStorage.removeItem('referrer')
+                    this.referrer = ""
                     return
                 }
                 this.$toast(res.data.ResultCD)
@@ -285,10 +298,22 @@ export default {
                 let data = res.data;
                 if(data.ResultCD == 200){
                     this.$toast.success('注册成功,进一步完善资料')
-                    sessionStorage.removeItem('referrer')
-                    this.referrer = this.authCode = ''
+                    this.authCode = ''
+                    let opt1 = {
+                        account:opt.account,
+                        password:opt.password
+                    }
+                    this.$ajax('/index/Login/login','post',this.$sess('UserInfo',opt)).then(res=>{
+                        if(res.data.ResultCD == 4005){
+                            this.userID = res.data.Data.user_id
+                        }else{
+                            this.state = 0;
+                            this.$toast.success('请重新登录完善资料')
+                            return;
+                        }
+                    })
                     setTimeout(()=>{
-                        this.sexShow = true
+                        this.show = true
                     },500)
                     return
                 }
@@ -381,5 +406,10 @@ export default {
             vertical-align: middle;
         }
     }
+}
+.portrait{
+    width:10rem;
+    height:10rem;
+    object-fit: cover;
 }
 </style>

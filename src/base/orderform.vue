@@ -3,7 +3,7 @@
         <i-header :headline = headline></i-header>
         <div class="content">
             <ul class="orderList" v-for="(item,index) in orderList" :key="index">
-                <h3 class="clearfix"><img src="../common/images/userhead.png" />{{conpany}}<span v-text="item.is_pay == 0? '未付款':'已付款'"></span></h3>
+                <h3 class="clearfix"><img src="../common/images/userhead.png" />{{conpany}}<span v-text="orderStatus(item.orders_status)"></span></h3>
                 <li v-for="(items,indexs) in item.goods_data" :key="indexs">
                     <div @click="pushDetails(item)">
                         <van-card :title="items.goods_name" desc="衣服" :num="items.goods_quantity" :price="items.goods_money" :thumb="base + items.goods_thumbnail"  >
@@ -19,7 +19,7 @@
                 </div>
                 <div class="button" v-if="item.is_pay == 0">
                     <span @click="delOrder(item.orders_id)">取消订单</span>
-                    <span @click="goneToPay(item.total_money,item.orders_number)">在线支付</span>
+                    <span v-if="orderStatus(item.orders_status == 0)" @click="goneToPay(item.total_money,item.orders_number)">在线支付</span>
                 </div>
             </ul>
         </div>
@@ -81,6 +81,7 @@ export default {
                     return;
                 }
                 this.orderList = data.Data
+                console.log(this.orderList)
             })
         },
         delOrder(id){
@@ -127,6 +128,27 @@ export default {
                     return '已评价'
                     break;
                 }
+                case 6:{
+                    return '完结后用户删除'
+                    break;
+                }
+                case 7:{
+                    return '退款中'
+                    break;
+                }
+                case 8:{
+                    return '已退款'
+                    break;
+                }
+                case 9:{
+                    return '拒绝退款'
+                    break;
+                }
+                case 10:{
+                    return '订单超时'
+                    break
+                }
+
             }
         },
         pushDetails(obj){

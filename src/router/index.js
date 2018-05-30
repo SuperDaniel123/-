@@ -141,6 +141,18 @@ export default new Router({
           name:'specialPro',
           component:resolve => require(['@/base/specialPro'],resolve)
         },
+        //个人信息
+        {
+          path:'/profile',
+          name:'profile',
+          component:resolve => require(['@/base/profile'],resolve)
+        },
+        //退款
+        {
+          path:'/refund/:order',
+          name:'refund',
+          component:resolve => require(['@/base/refund'],resolve)
+        },
       ]
     },
     {

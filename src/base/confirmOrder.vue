@@ -30,7 +30,12 @@
                 <p class="gray">创建时间：{{orderDetail.edittime}}</p>
             </div>
             <div class="e-line"></div>
-            <van-button type="primary" size="large" class="bottonBtn" @click="show = true">立即付款</van-button>
+            <div class="o-price">
+                <div class="btn" v-if="orderDetail.orders_status > 1 &&orderDetail.orders_status < 7 " @click="goneRefund">退款</div>
+                <div class="btn" v-if="orderDetail.orders_status == 7 ">退款中</div>
+                <div class="btn" v-if="orderDetail.orders_status ==8 ">已退款</div>
+            </div>
+            <van-button v-if="orderDetail.orders_status == 0" type="primary" size="large" class="bottonBtn" @click="show = true">立即付款</van-button>
             <!--支付弹窗-->
             <van-popup v-model="show" position="bottom" >
                 <pay-popup :sum="sum" :orderNum="orderNum"></pay-popup>
@@ -67,9 +72,6 @@ export default {
             orderDetail:''
         }
     },
-    beforeDestroy(){
-        this.orderS('')
-    },
     created(){
         if(this.$route.params.first == 1){
             this.createOrders()
@@ -97,6 +99,14 @@ export default {
                 this.orderDetail = data;
             })
         },
+        goneRefund(){
+            this.$router.push({
+                name:'refund',
+                params:{
+                    order:this.orderDetail.orders_number
+                }
+            })
+        }
         
     }
 }
@@ -163,6 +173,16 @@ export default {
         span{
             color:@org;
         }
+    }
+    .btn{
+        float: right;
+        border:1px solid @org;
+        width:5rem;
+        line-height: 2rem;
+        border-radius: 5px;
+        text-align: center;
+        color:@org;
+        
     }
 }
 .bottonBtn{

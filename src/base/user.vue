@@ -13,12 +13,13 @@
         <div class="e-line"></div>
         <van-cell-group v-if="shopUrl != false">
             <van-cell title="我的店铺" is-link :to="shopUrl" />
-            <!-- <van-cell title="爱车档案" is-link />
-            <van-cell title="个人信息" is-link /> -->
+            <!-- <van-cell title="爱车档案" is-link />-->
+            
         </van-cell-group>
         <div class="e-line"></div>
         <van-cell-group>
             <van-cell title="我的订单" is-link to="/orderform"/>
+            <van-cell title="个人信息" is-link to="/profile"/>
             <van-cell title="购物车" is-link to="/shoppingCart" />
             <van-cell title="收藏夹" is-link to="/collectionList"/>
         </van-cell-group>

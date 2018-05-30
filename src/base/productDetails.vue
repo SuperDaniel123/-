@@ -8,7 +8,7 @@
         </div>
         <van-swipe class="banner" :autoplay="3000">
             <van-swipe-item v-for="(item,index) in details.thumbnail" :key="index">
-                <img :src="base + item.picture_path" />
+                <img class="images" :src="base + item.picture_path" />
             </van-swipe-item>
         </van-swipe>
         <div class="prodetails">
@@ -83,7 +83,7 @@ export default {
             return "只要你的朋友通过你的分享购买商品，你就能赚到至少"+this.details.rebate_money+"元的分润收入哦~"
         },
         special(){
-            return this.$route.query.special ? 'true':'false'
+            return this.$route.query.special == undefined ? false:true
         }
     },
     watch:{
@@ -435,5 +435,10 @@ export default {
         font-size:20px;
         vertical-align: middle;
     }
+}
+.images{
+    width:100%;
+    height:30rem;
+    object-fit: cover;
 }
 </style>

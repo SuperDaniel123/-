@@ -34,7 +34,8 @@ import {
     Radio,
     Search,
     Picker,
-    Field
+    Field,
+    Uploader
 } from 'vant';
 Vue.use(Button).use(Swipe)
 .use(SwipeItem).use(Tab).use(Tabs)
@@ -43,7 +44,7 @@ Vue.use(Button).use(Swipe)
 .use(Checkbox).use(CheckboxGroup).use(Area).use(Popup)
 .use(Switch).use(CellGroup).use(Cell).use(Card).use(Loading)
 .use(RadioGroup).use(Radio).use(Search).use(Picker).use(jsons)
-.use(Field)
+.use(Field).use(Uploader)
 
 //封装请求参数转换
 Vue.prototype.$sess = function(id,opt){
@@ -57,7 +58,7 @@ Vue.prototype.$base = 'http://api.zymc.cakcc.cn:88'
 Vue.prototype.$datas = jsons
 
 router.beforeEach((to, from, next) => {
-    let link = ['shoppingCart','address','addressEdit','orderform','collectionList','storeOther','recordDetails','bankCard','addBankCard','withdrawDeposit','recordDetails','storeOther']
+    let link = ['profile','shoppingCart','address','addressEdit','orderform','collectionList','storeOther','recordDetails','bankCard','addBankCard','withdrawDeposit','recordDetails','storeOther']
     let names = to.name
     let isDate = Date.parse(new Date())
     let loginTime = localStorage.getItem('time')
