@@ -1,20 +1,23 @@
 <template>
     <div>
         <i-header :headline = headline></i-header>
-        <div class="content">
+        <div class="content" style="padding-bottom:3rem;">
             <van-checkbox-group v-model="result" @change="geta">
                 <van-checkbox label-disabled v-for="(item,index) in list" :key="index" :name="item"  >
-                    <div class="textBox clearfix">
-                        <img :src="base + item.thumbnail" />
-                        <div class="datum">
-                            <h3 v-text="item.goods_name"></h3>
-                            <span class="classify" v-text="item.cat_id"></span>
-                            <div class="price">
-                                <span>&yen;{{item.now_price}}</span>
-                                <div class="num"><i @click="quantity(0,item.goods_id)">-</i><input  disabled="disabled" type="number" :value="item.goods_quantity" /><i @click="quantity(1,item.goods_id)">+</i></div>
+                    <van-cell-swipe :right-width="65">
+                        <div class="textBox clearfix">
+                            <img :src="base + item.thumbnail" />
+                            <div class="datum">
+                                <h3 v-text="item.goods_name"></h3>
+                                <span class="classify" v-text="item.cat_id"></span>
+                                <div class="price">
+                                    <span>&yen;{{item.now_price}}</span>
+                                    <div class="num"><i @click="quantity(0,item.goods_id)">-</i><input  disabled="disabled" type="number" :value="item.goods_quantity" /><i @click="quantity(1,item.goods_id)">+</i></div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        <span slot="right" class="rightBtn" @click="onClose(item.shopping_id)">删除</span>
+                    </van-cell-swipe>
                 </van-checkbox>
             </van-checkbox-group>
         </div>
@@ -47,24 +50,6 @@ export default {
             handler(val,old){
                 this.priceOr()
                 this.checked = this.result.length == this.list.length? true: false;
-                // if(this.oldList.length == 0){
-                //     return
-                // }
-                // for(let i = 0; i < this.result.length; i++){
-                //     let temp = this.result[i]
-                //     for(let j = 0; j < this.oldList.length; j++){
-                //         if(this.oldList[j] == temp){
-                //             return;
-                //         }
-                //         if(this.oldList[j]['goods_quantity'] > temp['goods_quantity']){
-                //             this.ShoppingCartOperating(0,temp.goods_id)
-                //             return
-                //         }
-                //         if(this.oldList[j]['goods_quantity'] < temp['goods_quantity']){
-                //             this.ShoppingCartOperating(1,temp.goods_id)
-                //         }
-                //     }
-                // }
             },
             deep:true
         },
@@ -130,8 +115,7 @@ export default {
             }
             this.sumPri = sum
         },
-        quantity(type,id){
-            // this.oldList = JSON.parse(JSON.stringify(this.list));  
+        quantity(type,id){  
             if(type == 0){
                 for(let i = 0; i < this.list.length; i++){
                     let temp = this.list[i]
@@ -168,6 +152,25 @@ export default {
             this.$ajax('/index/Shopping_Cart/ShoppingCartOperating','post',obj).then(res=>{
                 // console.log(res)
             })
+            
+        },
+        onClose(id){
+            let r = confirm('是否删除商品?')
+            if(r){
+                let opt = {
+                    shopping_id:id
+                }
+                let obj = Object.assign(this.$sess('Condition',opt),this.$sess('verify',this.verify))
+                this.$ajax('/index/Shopping_Cart/ShoppingCartDel','post',obj).then(res=>{
+                    let data = res.data
+                    if(data.ResultCD == 200){
+                        this.$toast('删除成功')
+                        this.getCartList()
+                        return;
+                    }
+                    this.$toast(data.ResultCD)
+                })
+            }
             
         }
     }
@@ -251,6 +254,7 @@ export default {
 }
 .bottom{
     border-top:1px solid @borderColor;
+    background: #fff;
     position: fixed;
     bottom: 0;
     left: 0;
@@ -280,5 +284,13 @@ export default {
         }
     }
     
+}
+.rightBtn{
+    line-height: 9rem;
+    display: block;
+    width:65px;
+    text-align: center;
+    background: @red;
+    color:#fff;
 }
 </style>

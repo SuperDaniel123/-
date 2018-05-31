@@ -20,8 +20,9 @@ const state = {
     //生成订单obj
     createOrder:'',
     //订单from
-    payFrom:''
-    
+    payFrom:'',
+    //跳转
+    skip:0
 }
 
 export default state

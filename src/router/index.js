@@ -153,6 +153,12 @@ export default new Router({
           name:'refund',
           component:resolve => require(['@/base/refund'],resolve)
         },
+        //我的客户
+        {
+          path:'/myCustomer',
+          name:'myCustomer',
+          component:resolve => require(['@/base/myCustomer'],resolve)
+        },
       ]
     },
     {

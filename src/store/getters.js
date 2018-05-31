@@ -20,3 +20,6 @@ export const createOrder = state => state.createOrder
 
 //付款from
 export const payFrom = state => state.payFrom
+
+//
+export const skip = state => state.skip

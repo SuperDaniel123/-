@@ -19,7 +19,10 @@ import { mapGetters,mapMutations } from 'vuex'
 export default {
     created(){
         this.shopkeeper()
-        console.log(this.setMID)
+        if(this.$route.query.user_id){
+            sessionStorage.setItem('referrer',this.$route.query.user_id)
+        }
+        
     },
     computed:{
         ...mapGetters(['setMID']),

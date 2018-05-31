@@ -17,6 +17,13 @@
                     </template>
                     <van-radio name="2" />
                 </van-cell>
+                <van-cell clickable @click="radio = '3'">
+                    <template slot="title">
+                        <img class="payicon" src="../common/images/balance.png" />
+                        <span class="van-cell-text">余额支付( {{counts.toFixed(2)}} )</span>
+                    </template>
+                    <van-radio name="3" />
+                </van-cell>
             </van-cell-group>
         </van-radio-group>
         <div class="o-price">
@@ -28,7 +35,7 @@
 </template>
 
 <script>
-import {mapMutations} from 'vuex'
+import {mapGetters, mapMutations} from 'vuex'
 export default {
     props:['sum','orderNum'],
     watch:{
@@ -36,18 +43,24 @@ export default {
             console.log(typeof val)
         }
     },
+    computed:{
+        ...mapGetters(['setMID','verify']),
+    },
     data(){
         return{
-            radio:'1'
+            radio:'1',
+            //余额
+            counts:0
         }
     },
     created(){
-
+        this.getMaterial()
     },
     methods:{
         ...mapMutations({
             payfrom:'PAYFROM',
-            verify:'VERIFY'
+            verify:'VERIFY',
+            skips:'SKIP'
         }),
         PaymentChannels(){
             let opt = {
@@ -59,10 +72,10 @@ export default {
                 case 1 :{
                     this.$ajax('/index/wx_pay/wxPayTrade','post',obj).then(res=>{
                         let data = res.data     
-                        alert(data.Data.mweb_url)
                         window.location.href = data.Data.mweb_url
                         this.verify(JSON.parse(localStorage.getItem('MID')))
-                        this.$router.push('/orderform')
+                        this.skips(1)
+                        this.$router.push('/')
                     })
                     break
                 }
@@ -76,12 +89,51 @@ export default {
                     })
                     break;
                 }
+                case 3 :{
+                    let opt1 = {
+                        actionType:'payment',
+                        orders_number:this.orderNum,
+                        user_id:this.setMID.user_id
+                    }
+                    let obj1 = Object.assign(this.$sess('info',opt1),this.$sess('verify',this.verify))
+                    if(this.counts < this.sum){
+                        this.$toast('余额不足')
+                        return;
+                    }
+                    this.$ajax('/index/operation/pay','post',obj1).then(res=>{
+                        let data = res.data
+                        if(data.ResultCD == 200){
+                            this.$toast.success('支付成功');
+                            setTimeout(()=>{
+                                this.skips(1)
+                                this.$router.push('/')
+                            },1000)
+                        }
+                    })
+                    break;
+                }
                 default:{
                     this.$toast('参数错误')
                     break;
                 }
             }
-        }
+        },
+        //用户余额
+        getMaterial(){
+            let opt = {
+                user_id:this.setMID.user_id,
+                account:this.setMID.account,
+                OperationType:1000
+            }
+            this.$ajax('/index/Profile/profile','post',this.$sess('UserInfo',opt)).then(res=>{
+                let data = res.data
+                if(data.ResultCD == 200){
+                    this.counts = +data.Data.total_income
+                    return;
+                }
+                this.$toast(data.ResultCD)
+            })
+        },
     }
 }
 </script>

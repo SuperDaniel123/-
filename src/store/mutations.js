@@ -43,6 +43,10 @@ const mutations = {
     //支付from
     [types.PAYFROM](state,str){
         state.payFrom = str
+    },
+    //跳转订单页状态
+    [types.SKIP](state,skips){
+        state.skip = skips
     }
 }
 

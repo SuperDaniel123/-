@@ -16,6 +16,7 @@
                 <van-cell title="提成明细" is-link :to="{name:'recordDetails',params:{type:0}}"/>
                 <van-cell title="提现记录" is-link :to="{name:'recordDetails',params:{type:1}}"/>
                 <van-cell title="我的银行卡" is-link :to="{name:'bankCard'}"/>
+                <van-cell title="我的客户" is-link :to="{name:'myCustomer'}"/>
             </van-cell-group>
         </div>
         <van-popup style="height:100%;background:none" v-model="show" position="bottom" :overlay="true">

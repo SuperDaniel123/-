@@ -20,3 +20,6 @@ export const ADDRESSEDIT = "ADDRESSEDIT"
 export const CREATEORDER = "CREATEORDER"
 
 export const PAYFROM = "PAYFROM"
+
+//跳转 skip
+export const  SKIP = "SKIP"

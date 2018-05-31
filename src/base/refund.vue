@@ -91,7 +91,8 @@ export default {
     },
     methods:{
         ...mapMutations({
-            orderS:'CREATEORDER'
+            orderS:'CREATEORDER',
+            skips:'SKIP'
         }),
         onCancel(){this.show = false},
         onConfirm(value,index){
@@ -118,11 +119,12 @@ export default {
             this.$ajax('/index/refund/applyRefund','post',obj).then(res=>{
                 let data = res.data
                 if(data.ResultCD == 200){
-                    this.$toast('申请退款成功')
-                    let des = this.createOrder
-                    des.orders_status = 7;
-                    this.orderS(obj)
-                    this.$router.goBack()
+                    this.$toast.success('申请退款成功')
+                    setTimeout(()=>{
+                        this.skips(1)
+                        this.$router.push('/')
+                    },1000)
+                    
                     return;
                 }
                 this.$toast(data.ResultCD)

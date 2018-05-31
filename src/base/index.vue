@@ -24,8 +24,14 @@ export default {
     },
     computed:{
         ...mapGetters([
-            'indexStateS'
+            'indexStateS',
+            'skip'
         ])
+    },
+    created(){
+        if(this.skip == 1){
+            this.$router.push('/orderform')
+        }
     }
 }
 </script>

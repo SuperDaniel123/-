@@ -46,6 +46,7 @@ export default {
     },
     created(){
         this.getOrderList()
+        this.skips(0)
     },
     data(){
         return{
@@ -65,7 +66,8 @@ export default {
     },
     methods:{
         ...mapMutations({
-            orderS:'CREATEORDER'
+            orderS:'CREATEORDER',
+            skips:'SKIP'
         }),
         getOrderList(){
             let opt = {
