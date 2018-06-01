@@ -4,7 +4,7 @@
         <div class="content" style="padding-bottom:3rem;">
             <van-checkbox-group v-model="result" @change="geta">
                 <van-checkbox label-disabled v-for="(item,index) in list" :key="index" :name="item"  >
-                    <van-cell-swipe :right-width="65">
+                    <van-cell-swipe :right-width="65" >
                         <div class="textBox clearfix">
                             <img :src="base + item.thumbnail" />
                             <div class="datum">
@@ -16,7 +16,7 @@
                                 </div>
                             </div>
                         </div>
-                        <span slot="right" class="rightBtn" @click="onClose(item.shopping_id)">删除</span>
+                        <span slot="right" class="rightBtn" @click="getID(item.shopping_id)">删除</span>
                     </van-cell-swipe>
                 </van-checkbox>
             </van-checkbox-group>
@@ -99,6 +99,10 @@ export default {
             this.$ajax('/index/Shopping_Cart/ShoppingCartList','post',obj).then(res=>{
                 let data = res.data;
                 if(data.ResultCD != 200){
+                    if(data.ErrorMsg == "无数据"){
+                        this.list = []
+                        return
+                    }
                     this.$toast(data.ErrorMsg)
                     return;
                 }
@@ -154,25 +158,22 @@ export default {
             })
             
         },
-        onClose(id){
-            let r = confirm('是否删除商品?')
-            if(r){
-                let opt = {
-                    shopping_id:id
-                }
-                let obj = Object.assign(this.$sess('Condition',opt),this.$sess('verify',this.verify))
-                this.$ajax('/index/Shopping_Cart/ShoppingCartDel','post',obj).then(res=>{
-                    let data = res.data
-                    if(data.ResultCD == 200){
-                        this.$toast('删除成功')
-                        this.getCartList()
-                        return;
-                    }
-                    this.$toast(data.ResultCD)
-                })
+        getID(id){
+            let opt = {
+                shopping_id:id
             }
-            
-        }
+            let obj = Object.assign(this.$sess('Condition',opt),this.$sess('verify',this.verify))
+            this.$ajax('/index/Shopping_Cart/ShoppingCartDel','post',obj).then(res=>{
+                let data = res.data
+                if(data.ResultCD == 200){
+                    this.$toast('删除成功')
+                    this.getCartList()
+                    return;
+                }
+                this.$toast(data.ResultCD)
+            })
+        },
+
     }
 }
 </script>

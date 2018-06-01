@@ -47,7 +47,13 @@ const mutations = {
     //跳转订单页状态
     [types.SKIP](state,skips){
         state.skip = skips
+    },
+
+    //活动广告
+    [types.ACTIVITY](state,act){
+        state.activity = act
     }
+
 }
 
 export default mutations

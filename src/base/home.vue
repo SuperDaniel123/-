@@ -23,6 +23,11 @@
             <p class="otherText pdc">公司地址：广东省佛山市顺德区乐从镇乐从社区居民委员会佛山新城裕和路142号金海文化创意中心1702号<br/>联系热线：0757-29381825</p>
         </div>
         <div class="footerText">佛山泽银汽车销售服务有限公司  版权所有</div>
+        <van-popup v-model="show">
+            <div class="scce" @click="activityUrl">
+                <img :src="base+imgContent.activity_img" />
+            </div>
+        </van-popup>
     </div>
 </template>
 
@@ -30,6 +35,7 @@
 <script>
 import homeFirst from '@/base/homeFirst'
 import homeOther from '@/base/homeOther'
+import {mapGetters,mapMutations} from 'vuex'
 export default {
     components:{
         homeFirst,
@@ -48,23 +54,37 @@ export default {
             this.cat_id = this.navList[val].cat_id
         }
     },
-
+    computed:{
+        ...mapGetters(['activity'])
+    },
     created(){
         this.getNav()
+        if(this.activity){
+            this.getActivity()
+        }
+        
     },
     data(){
         return{
-            
+            //域名
+            base:this.$base,
             navList:[],
             index:0,
             scroll:'',
             //头部样式变化
             style:0,
             //当前导航类型
-            cat_id:''
+            cat_id:'',
+            //活动弹窗
+            show:false,
+            //活动图
+            imgContent:''
         }
     },
     methods:{
+        ...mapMutations({
+            act:'ACTIVITY'
+        }),
         cutPage(index){
             for(let i = 0; i < this.navList.length; i++){
                 this.navList[i].stated = 0
@@ -90,6 +110,25 @@ export default {
                 this.navList = data
                 this.cat_id = data[0].cat_id
             })
+        },
+        getActivity(){
+            this.$ajax('/index/others/activity','post',this.$sess('info', {actionType : 'activity_content'})).then(res=>{
+                let data = res.data
+                if(data.ResultCD == 200){
+                    this.imgContent = data.Data
+                    this.show = true;
+                    this.act(false)
+                    return
+                }
+                this.$toast(data.ErrorMsg)
+            })
+        },
+        activityUrl(){
+            if(this.imgContent.activity_url == ""){
+                this.show = false;
+                return
+            }
+            window.open(this.imgContent.activity_url)
         }
     },
     mounted(){
@@ -209,4 +248,13 @@ export default {
     padding:2rem 0;
 }
 
+.scce{
+    height:30rem;
+    width:20rem;
+    img{
+        width:100%;
+        height:100%;
+        object-fit: cover;
+    }
+}
 </style>

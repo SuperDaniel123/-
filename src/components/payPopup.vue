@@ -59,7 +59,6 @@ export default {
     methods:{
         ...mapMutations({
             payfrom:'PAYFROM',
-            verify:'VERIFY',
             skips:'SKIP'
         }),
         PaymentChannels(){

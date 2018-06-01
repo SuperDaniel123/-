@@ -25,13 +25,34 @@ export default {
     computed:{
         ...mapGetters([
             'indexStateS',
-            'skip'
+            'skip',
+            'setMID'
         ])
     },
     created(){
+        if(this.setMID != ''){
+            this.getMaterial()
+        }
         if(this.skip == 1){
             this.$router.push('/orderform')
         }
+    },
+    methods:{
+        getMaterial(){
+            let opt = {
+                user_id:this.setMID.user_id,
+                account:this.setMID.account,
+                OperationType:1000
+            }
+            this.$ajax('/index/Profile/profile','post',this.$sess('UserInfo',opt)).then(res=>{
+                let data = res.data
+                if(data.ResultCD == 200){
+                    sessionStorage.setItem('identity',data.Data.user_grade)
+                    return;
+                }
+                this.$toast(data.ErrorMsg)
+            })
+        },
     }
 }
 </script>

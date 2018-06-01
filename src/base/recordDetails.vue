@@ -4,23 +4,34 @@
         <div class="content">
             <van-cell-group>
                 <van-cell :title="typeDec">
-                    <span class="pay">&yen;{{rental.toFixed(2)}}</span>
+                    <span class="pay">&yen;{{rental}}</span>
                 </van-cell>
             </van-cell-group>
             <div class="e-line"></div>
+
             <van-cell-group v-if="routrType == 1">
                 <van-cell :title="item.create_time" v-for="(item,index) in list" :key="index">
+                    <i class="payState red" v-if="item.withdraw_status == -1">拒绝提现</i>
+                    <i class="payState blue" v-if="item.withdraw_status == 0">审核中</i>
+                    <i class="payState blue" v-if="item.withdraw_status == 1">已审核</i>
+                    <i class="payState org" v-if="item.withdraw_status == 2">已到账</i>
                     <span class="pay">&yen;{{item.withdraw_money}}</span>
                 </van-cell>
             </van-cell-group>
 
-            <ul class="deduct" v-if="routrType == 0">
-                <li v-for="(item,index) in list" :key="index">
-                    <span v-text="item.income_source_user_name"></span>
-                    <p v-text="item.create_time"></p>
-                    <div class="pay">&yen;{{item.money}}</div>
-                </li>
-            </ul>
+            
+                <ul class="deduct" v-if="routrType == 0">
+                    <van-list v-model="loading" :finished="finished" @load="onLoad" :offset="100" >
+                    <li v-for="(item,index) in list" :key="index">
+                        <span v-text="item.income_source_user_name"></span>
+                        <p v-text="item.create_time"></p>
+                        <div class="pay red" v-if="item.type == 1">&yen;{{item.money}}</div>
+                        <div class="pay blue" v-if="item.type == 0">-&yen;{{item.money}}</div>
+                    </li>
+                    </van-list>
+                </ul>
+            
+            
         </div>
     </div>
 </template>
@@ -53,7 +64,9 @@ export default {
             list:[],
             page:1,
             //总额
-            rental:0
+            rental:0,
+            loading: false,
+            finished: false,
         }
     },
     methods:{
@@ -63,7 +76,7 @@ export default {
             let opt = {
                 actionType:types,
                 user_id:this.setMID.user_id,
-                limit:20,
+                limit:5,
                 page:this.page
             }
             let obj = Object.assign(this.$sess('info',opt),this.$sess('verify',this.verify))
@@ -80,11 +93,25 @@ export default {
                             break
                         }
                     }
-                    this.list = data.Data;
+                    data.Data.forEach(element => {
+                        this.list.push(element)
+                    });
+                    if(data.Data.length == 0 ){
+                        this.finished = true;
+                    }
+                    
                     return;
                 }
                 this.$toast(res.data.ErrorMsg);
             })
+        },
+        onLoad() {
+            console.log(1)
+            this.page += 1;
+            setTimeout(() => {
+                this.getterList();
+                this.loading = false;
+            }, 500);
         }
     }
 }
@@ -95,6 +122,28 @@ export default {
 .pay{
     color:@red;
     font-size:1rem;
+}
+.pay.red{
+    color:@red;
+}
+.pay.blue{
+    color:@blue;
+}
+.payState{
+    color:#fff;
+    font-size:12px;
+    margin-right: 0.5rem;
+    padding:2px 4px;
+    border-radius: 2px;
+}
+.payState.red{
+    background: @red
+}
+.payState.blue{
+    background: @blue
+}
+.payState.org{
+    background: @org
 }
 .deduct{
     li{

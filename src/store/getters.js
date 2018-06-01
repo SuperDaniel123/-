@@ -23,3 +23,6 @@ export const payFrom = state => state.payFrom
 
 //
 export const skip = state => state.skip
+
+//活动广告
+export const activity = state => state.activity

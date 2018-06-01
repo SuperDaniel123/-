@@ -99,4 +99,5 @@ let api = function(url,type,options){
 
 
 Vue.prototype.$ajax = api;
+Vue.prototype.axios = axios
 Vue.use(axios);

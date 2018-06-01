@@ -23,3 +23,6 @@ export const PAYFROM = "PAYFROM"
 
 //跳转 skip
 export const  SKIP = "SKIP"
+
+//活动广告
+export const ACTIVITY = "ACTIVITY"

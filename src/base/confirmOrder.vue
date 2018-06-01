@@ -14,7 +14,7 @@
                     <div class="orderText">
                         <h3 v-text="item.goods_name"></h3>
                         <span>数量：{{item.goods_quantity}}</span>
-                        <big>&yen;{{+item.goods_money * +item.goods_quantity}}</big>
+                        <big>&yen;{{+item.now_price * +item.goods_quantity}}</big>
                     </div>
                 </li>
             </ul>
@@ -97,6 +97,7 @@ export default {
             this.$ajax('index/Goods_Orders/ComfirmOrders','post',obj).then(res=>{
                let data = res.data.Data;
                 this.orderDetail = data;
+                console.log(this.orderDetail)
             })
         },
         goneRefund(){

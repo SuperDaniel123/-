@@ -159,6 +159,12 @@ export default new Router({
           name:'myCustomer',
           component:resolve => require(['@/base/myCustomer'],resolve)
         },
+        //物流 
+        {
+          path:'/logistics/:id',
+          name:'logistics',
+          component:resolve => require(['@/base/logistics'],resolve)
+        },
       ]
     },
     {

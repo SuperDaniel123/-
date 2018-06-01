@@ -3,9 +3,9 @@
         <loading v-if="loaded"></loading>
         <van-swipe class="banner" :autoplay="3000">
             <van-swipe-item v-for="(item,index) in bannerList" :key="index">
-                <router-link :to="{path:'/productDetails',query:{goods_id:item.goods_id}}">
+                <div @click="goneURL(item)">
                     <img :src="base + item.img_path" />
-                </router-link>
+                </div>
             </van-swipe-item>
         </van-swipe>
         <div class="recBox">
@@ -166,6 +166,17 @@ export default {
                 let data = res.data.Data
                 this.rushlist = data
             })
+        },
+        goneURL(item){
+            console.log(item)
+            if(item.activity_url == ""){
+                this.$router.push({
+                    path:'/productDetails',
+                    query:{goods_id:item.goods_id}
+                })
+                return;
+            }
+            window.open(item.activity_url)
         }
     }
 }

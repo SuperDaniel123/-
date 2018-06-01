@@ -13,13 +13,14 @@
                         </van-card>
                     </div>
                 </li>
-                <div class="button" v-if="item.is_pay != 0">
-                    <span>查看物流</span>
-                    <span>确认收货</span>
-                </div>
-                <div class="button" v-if="item.is_pay == 0">
-                    <span @click="delOrder(item.orders_id)">取消订单</span>
-                    <span v-if="orderStatus(item.orders_status == 0)" @click="goneToPay(item.total_money,item.orders_number)">在线支付</span>
+                <div class="button">
+                    <span v-if="item.orders_status == 4 || item.orders_status == 3 " @click="goneLogistics(item.orders_id)">查看物流</span>
+                    <span v-if="item.orders_status == 3 " @click="OrdersStatus(item.orders_id,4)">确认收货</span>
+                    <span v-if="item.orders_status == 0"  @click="OrdersStatus(item.orders_id,1)">取消订单</span>
+                    <span v-if="item.orders_status == 4">立即评价</span>
+                    <span v-if="item.orders_status == 5">已评价</span>
+                    <span v-if="item.orders_status == 1 || item.orders_status == 5 || item.orders_status == 6 || item.orders_status == 8 || item.orders_status == 10" @click="delOrder(item.orders_id)">删除订单</span>
+                    <span v-if="item.orders_status == 0" @click="goneToPay(item.total_money,item.orders_number)">在线支付</span>
                 </div>
             </ul>
         </div>
@@ -83,8 +84,31 @@ export default {
                     return;
                 }
                 this.orderList = data.Data
-                console.log(this.orderList)
             })
+        },
+        //确认收货
+        OrdersStatus(id,status){
+            let opt ={
+                user_id:this.setMID.user_id,
+                orders_id:id,
+                orders_status:status
+            }
+            let obj = Object.assign(this.$sess('Condition',opt),this.$sess('verify',this.verify))
+            this.$ajax('/index/Goods_Orders/OrdersStatus','post',obj).then(res=>{
+                let data = res.data
+                if(data.ResultCD == 200){
+                    if(status == 4){
+                        this.$toast('已确认收货')
+                    }
+                    if(status == 1){
+                        this.$toast('订单已取消')
+                    }
+                    this.getOrderList()
+                    return;
+                }
+                this.$toast(data.ErrorMsg)
+            })
+
         },
         delOrder(id){
             let r = confirm("确定删除订单?")
@@ -105,7 +129,7 @@ export default {
             }
         },
         orderStatus(status){
-            switch(status){
+            switch(+status){
                 case 0 :{
                     return '未付款'
                     break;
@@ -152,6 +176,14 @@ export default {
                 }
 
             }
+        },
+        goneLogistics(id){
+            this.$router.push({
+                name:"logistics",
+                params:{
+                    id:id
+                }
+            })
         },
         pushDetails(obj){
             this.orderS(obj);

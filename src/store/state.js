@@ -22,7 +22,9 @@ const state = {
     //订单from
     payFrom:'',
     //跳转
-    skip:0
+    skip:0,
+    //活动广告
+    activity:true
 }
 
 export default state

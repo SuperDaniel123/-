@@ -33,25 +33,26 @@
 </template>
 
 <script>
-import { mapGetters,mapMutations } from 'vuex'
+import { mapGetters} from 'vuex'
 
 export default {
     computed:{
         ...mapGetters(['setMID']),
         shopUrl(){
-            if(!this.setMID){
+            if(!this.identity){
                 return false;
             }
-            return this.setMID.user_grade == 1? '/storeOther' : '/asOwner'
+            return this.identity == 1? '/storeOther' : '/asOwner'
         }
     },
-    created(){
-        this.getMaterial()
+    data(){
+        return{
+            identity:sessionStorage.getItem('identity')
+        }
+        
     },
     methods:{
-        ...mapMutations({
-            mid:'SET_MID'
-        }),
+
         logout(){
             this.$toast('退出成功')
             setTimeout(()=>{
@@ -63,24 +64,7 @@ export default {
         goLogin(){
             this.$router.push('/login')
         },
-        getMaterial(){
-            let opt = {
-                user_id:this.setMID.user_id,
-                account:this.setMID.account,
-                OperationType:1000
-            }
-            this.$ajax('/index/Profile/profile','post',this.$sess('UserInfo',opt)).then(res=>{
-                let data = res.data
-                if(data.ResultCD == 200){
-                    let MID = this.setMID
-                    MID.user_grade = data.Data.user_grade
-                    localStorage.setItem("MID",JSON.stringify(MID))
-                    this.mid(MID)
-                    return;
-                }
-                this.$toast(data.ResultCD)
-            })
-        },
+
     }
 }
 </script>
