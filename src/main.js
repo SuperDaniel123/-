@@ -37,7 +37,8 @@ import {
     Field,
     Uploader,
     CellSwipe,
-    Step, Steps
+    Step, Steps,
+    Rate
 } from 'vant';
 Vue.use(Button).use(Swipe)
 .use(SwipeItem).use(Tab).use(Tabs)
@@ -46,7 +47,7 @@ Vue.use(Button).use(Swipe)
 .use(Checkbox).use(CheckboxGroup).use(Area).use(Popup)
 .use(Switch).use(CellGroup).use(Cell).use(Card).use(Loading)
 .use(RadioGroup).use(Radio).use(Search).use(Picker).use(jsons)
-.use(Field).use(Uploader).use(CellSwipe).use(Step).use(Steps)
+.use(Field).use(Uploader).use(CellSwipe).use(Step).use(Steps).use(Rate)
 
 //封装请求参数转换
 Vue.prototype.$sess = function(id,opt){

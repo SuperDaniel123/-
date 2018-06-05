@@ -52,6 +52,11 @@ const mutations = {
     //活动广告
     [types.ACTIVITY](state,act){
         state.activity = act
+    },
+
+    //评论
+    [types.DISCUSS](state,dis){
+        state.discuss = dis
     }
 
 }

@@ -24,7 +24,10 @@ const state = {
     //跳转
     skip:0,
     //活动广告
-    activity:true
+    activity:true,
+    //评论
+    discuss:''
+    
 }
 
 export default state

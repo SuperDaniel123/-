@@ -26,3 +26,6 @@ export const skip = state => state.skip
 
 //活动广告
 export const activity = state => state.activity
+
+//评论
+export const discuss = state => state.discuss

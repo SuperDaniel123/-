@@ -26,6 +26,7 @@
         <van-popup v-model="show">
             <div class="scce" @click="activityUrl">
                 <img :src="base+imgContent.activity_img" />
+                <div class="closed"><i class="fa fa-close"></i></div>
             </div>
         </van-popup>
     </div>
@@ -255,6 +256,20 @@ export default {
         width:100%;
         height:100%;
         object-fit: cover;
+    }
+}
+.closed{
+    text-align: center;
+    margin-top:1rem;
+    .fa{
+        color:#fff;
+        display:inline-block;
+        width:30px;
+        height:30px;
+        line-height: 30px;
+        border:1px solid #fff;
+        border-radius: 50%;
+        font-size:16px;
     }
 }
 </style>

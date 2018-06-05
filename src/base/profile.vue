@@ -79,10 +79,8 @@ export default {
             this.file = event.target.files[0];//获取文件
             this.flag = true;
             var windowURL = window.URL || window.webkitURL;
-            this.file = event.target.files[0];
             //创建图片文件的url
             this.thenImg = windowURL.createObjectURL(event.target.files[0]);
-
         },
         submit(){
             var formdata = new FormData();
@@ -115,10 +113,10 @@ export default {
                 }).catch((error) =>{
                     this.$toast(error)
                 });
-        }
+            }
 
+        }
     }
-}
 </script>
 
 <style lang="less" scoped>

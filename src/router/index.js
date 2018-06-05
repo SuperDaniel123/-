@@ -165,6 +165,13 @@ export default new Router({
           name:'logistics',
           component:resolve => require(['@/base/logistics'],resolve)
         },
+        //评价 evaluate
+        {
+          path:'/evaluate',
+          name:'evaluate',
+          component:resolve => require(['@/base/evaluate'],resolve)
+        },
+
       ]
     },
     {

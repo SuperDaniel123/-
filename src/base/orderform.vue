@@ -6,7 +6,7 @@
                 <h3 class="clearfix"><img src="../common/images/userhead.png" />{{conpany}}<span v-text="orderStatus(item.orders_status)"></span></h3>
                 <li v-for="(items,indexs) in item.goods_data" :key="indexs">
                     <div @click="pushDetails(item)">
-                        <van-card :title="items.goods_name" desc="衣服" :num="items.goods_quantity" :price="items.goods_money" :thumb="base + items.goods_thumbnail"  >
+                        <van-card :title="items.goods_name" :num="items.goods_quantity" :price="items.goods_money" :thumb="base + items.goods_thumbnail"  >
                         <div slot="footer">
                             <div class="sxs" v-text="orderStatus(item.orders_status)"></div>
                         </div>
@@ -17,7 +17,7 @@
                     <span v-if="item.orders_status == 4 || item.orders_status == 3 " @click="goneLogistics(item.orders_id)">查看物流</span>
                     <span v-if="item.orders_status == 3 " @click="OrdersStatus(item.orders_id,4)">确认收货</span>
                     <span v-if="item.orders_status == 0"  @click="OrdersStatus(item.orders_id,1)">取消订单</span>
-                    <span v-if="item.orders_status == 4">立即评价</span>
+                    <span v-if="item.orders_status == 4" @click="evaluate(item.orders_id,item.goods_data)">立即评价</span>
                     <span v-if="item.orders_status == 5">已评价</span>
                     <span v-if="item.orders_status == 1 || item.orders_status == 5 || item.orders_status == 6 || item.orders_status == 8 || item.orders_status == 10" @click="delOrder(item.orders_id)">删除订单</span>
                     <span v-if="item.orders_status == 0" @click="goneToPay(item.total_money,item.orders_number)">在线支付</span>
@@ -68,7 +68,8 @@ export default {
     methods:{
         ...mapMutations({
             orderS:'CREATEORDER',
-            skips:'SKIP'
+            skips:'SKIP',
+            discuss:'DISCUSS'
         }),
         getOrderList(){
             let opt = {
@@ -83,6 +84,7 @@ export default {
                     this.$toast(data.ErrorMsg)
                     return;
                 }
+                console.log(data)
                 this.orderList = data.Data
             })
         },
@@ -198,6 +200,16 @@ export default {
             this.show = true;
             this.payObj.sum = sum;
             this.payObj.orderNum = num;
+        },
+        evaluate(id,item){
+            this.$router.push({
+                path:'/evaluate'
+            })
+            let opt = {
+                orders_id:id,
+                goodsList:item
+            }
+            this.discuss(opt)
         }
     }
 }

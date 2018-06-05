@@ -26,3 +26,5 @@ export const  SKIP = "SKIP"
 
 //活动广告
 export const ACTIVITY = "ACTIVITY"
+//评论
+export const DISCUSS = "DISCUSS"
