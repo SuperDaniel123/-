@@ -58,6 +58,8 @@ export default {
     props:['cat'],
     created(){
         this.focusMap()
+        this.rushTime()
+        
     },
     watch:{
         'rushActivate':{
@@ -67,22 +69,13 @@ export default {
             deep:true
         }
     },
-    computed:{
-
-    },
     data(){
         return {
 
             //域名
             base:this.$base,
             //抢购nav
-            rushNav:[
-                {name:'昨天',stated:'抢购中',timer:'',date:'yesterday'},
-                {name:'8:00',stated:this.timedOut(8),timer:'08',date:'today'},
-                {name:'12:00',stated:this.timedOut(12),timer:'12',date:'today'},
-                {name:'20:00',stated:this.timedOut(20),timer:'20',date:'today'},
-                {name:'明天',stated:'即将开始',timer:'',date:'tomorrow'}
-            ],
+            rushNav:[{name:'昨天',stated:'抢购中',timer:'',date:'yesterday'}],
             
             //当前激活
             rushActivate:null,
@@ -99,6 +92,50 @@ export default {
     },
     
     methods:{
+        //抢购时间
+        rushTime(){
+            let opt = {
+                actionType:'flashSaleTime'
+            }
+            this.$ajax('/index/flash_sale/flashTime','post',this.$sess('info',opt)).then(res=>{
+                let data = res.data.Data
+                let arr = []
+                for(let i = 0; i < data.length; i++){
+                    let temp = data[i]
+                    let obj = {}
+                    obj['name'] = temp;
+                    obj['stated'] = this.contrastTime(temp)
+                    obj['timer'] = temp;
+                    obj['date'] = 'today';
+                    arr.push(obj)
+                }
+                arr.unshift({name:'昨天',stated:'抢购中',timer:'',date:'yesterday'})
+                arr.push({name:'明天',stated:'即将开始',timer:'',date:'tomorrow'})
+                this.rushNav = JSON.parse(JSON.stringify(arr))
+            })
+        },
+        //字符串时间转换对比
+        contrastTime(str){
+            var myDate = new Date();
+            let h = myDate.getHours()
+            let m = myDate.getMinutes()
+            //当前时间转分钟
+            let sum = h * 60 + m
+            //导入时间
+            let timeArr = str.split(":")
+            let arrSum = +timeArr[0] * 60 + +timeArr[1] 
+            if(arrSum <= sum){
+                return '抢购中'
+            }
+            else{
+                return '即将开始'
+            }
+
+
+        },
+
+
+
         imgOptimize(small,big){
             if(big == '' || !big){
                 return this.base + small
@@ -112,15 +149,6 @@ export default {
                     cat:this.cat
                 }
             })
-        },
-        //判读抢购状态
-        timedOut(num){
-            let md = new Date();
-            if(md.getHours()>num){
-                return '抢购中'
-            }else{
-                return '即将开始'
-            }
         },
         //banner图
         focusMap(){
@@ -162,7 +190,7 @@ export default {
                 page:1,
                 cat_id:this.cat
             }
-            this.$ajax('/index/flash_sale/dataList','post',this.$sess('info',opt)).then(res=>{
+            this.$ajax('/index/flash_sale/flashSaleTime','post',this.$sess('info',opt)).then(res=>{
                 let data = res.data.Data
                 this.rushlist = data
             })

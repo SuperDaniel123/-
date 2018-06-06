@@ -11,6 +11,23 @@
                 <img class="images" :src="base + item.picture_path" />
             </van-swipe-item>
         </van-swipe>
+        <span class="snapup clearfix" v-if="details.is_flash_sale == 1">
+            <img src="../common/images/snapup.png" />
+            <div>
+                <p v-if="currentTime > sale_time && currentTime < sale_time_end">
+                    <span>{{'距离结束时间还有：'}}</span>
+                    <b v-text="this.timerting(sale_time_end)"></b>
+                </p>
+                <p v-if="currentTime < sale_time ">
+                    <span>{{'距离开始时间还有：'}}</span>
+                    <b v-text="this.timerting(sale_time)"></b>
+                </p>
+                <p v-if="currentTime > sale_time_end ">
+                    <span>{{'抢购结束'}}</span>
+                </p>
+                
+            </div>
+        </span>
         <div class="prodetails">
             <div class="top">
                 <h2 class="title">{{details.goods_name}}</h2>
@@ -84,7 +101,8 @@ export default {
         },
         special(){
             return this.$route.query.special == undefined ? false:true
-        }
+        },
+        
     },
     watch:{
         'scroll'(val,old){
@@ -98,6 +116,9 @@ export default {
     },
     created(){
         this.getDetails()
+    },
+    beforeDestroy(){
+        clearInterval(this.timers)
     },
     data(){
         return{
@@ -114,7 +135,19 @@ export default {
             //详情数据
             details:'',
             //分享图层show
-            show:false
+            show:false,
+
+            //当前时间
+            currentTime:'',
+            //抢购时间
+            sale_time:'',
+            //抢购结束时间
+            sale_time_end:'',
+            //抢购状态
+            saleStatus:0,
+
+            //计时器
+            timers:''
         }
     },
     methods:{
@@ -175,8 +208,15 @@ export default {
             let opt = this.setMID == "" ? {goods_id:this.goodsID} : {user_id:this.setMID.user_id, goods_id:this.goodsID}
             this.$ajax('/index/Goods/GoodsDetail','post',this.$sess('Condition',opt)).then(res=>{
                 let data = res.data.Data
+                if(data.is_flash_sale == 1){
+                    this.sale_time = new Date(data.flash_sale_time) / 1000
+                    this.sale_time_end = new Date(data.flash_sale_time_end) / 1000
+                    this.timers = setInterval(()=>{
+                        this.currentTime = parseInt(new Date() / 1000) 
+                    },1000)
+                }  
                 this.details = data;
-                console.log(this.details)
+                
             })
         },
 
@@ -237,6 +277,15 @@ export default {
                 this.whetherMID();
                 return
             }
+            if(this.details.is_flash_sale == 1){
+                if(this.currentTime == ''){
+                    return;
+                }
+                if(this.currentTime < this.sale_time){
+                    this.$toast('还没到抢购时间哦')
+                    return;
+                }
+            }
             let opt = {
                 addtime:this.details.addtime,
                 cat_id:this.details.cat_id,
@@ -253,7 +302,21 @@ export default {
         //关闭分享
         closeShare(val){
             this.show = val
-        }
+        },
+        //距离时间
+        timerting(disTime){
+            if(this.currentTime == ''){
+                return '00:00:00'
+            }
+            let lefttime = parseInt(+disTime - +this.currentTime)
+            let h = parseInt((lefttime / 3600) % 24);
+            let m = parseInt((lefttime / 60) % 60) < 10? '0'+parseInt((lefttime / 60) % 60) : parseInt((lefttime / 60) % 60)
+            let s = parseInt(lefttime % 60) < 10? '0'+parseInt(lefttime % 60) : parseInt(lefttime % 60);
+            if(lefttime<=0){
+                return;
+            }
+            return h + ':' + m + ':' + s
+        },
     },
     mounted(){
         window.addEventListener('scroll', this.menu)
@@ -267,6 +330,32 @@ export default {
 
 <style lang="less" scoped>
 @import '../common/css/common.less';
+.snapup{
+    display: block;
+    position: absolute;
+    top: 27rem;
+    left: 0;
+    width:100%;
+    box-sizing: border-box;
+    padding:0 1rem;
+    height:3rem;
+    line-height: 3rem;
+    background: @org;
+    img{
+        width:auto;
+        height:2rem;
+        object-fit: cover;
+    }
+    div{
+        float: right;
+        color:#fff;
+        font-size:12px;
+        b{
+            margin-left:0.5rem;
+            font-size:1rem;
+        }
+    }
+}
 .homeTop{
     transition: all 0.3s;
     position:fixed;
@@ -306,7 +395,6 @@ export default {
     .van-swipe-item{
         background: @org;
     }
-
 
 }
 
