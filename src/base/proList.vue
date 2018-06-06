@@ -63,10 +63,15 @@ export default {
                     this.$toast(data.ErrorMsg)
                     return
                 }
+                if(data.Data.length == 0){
+                    this.finished = true;
+                    return;
+                }
                 data.Data.forEach(element => {
                     this.ddlist.push(element)
                 });
-                this.finished = true;
+                
+                
             })
         },
         onLoad() {

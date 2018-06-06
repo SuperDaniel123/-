@@ -9,7 +9,7 @@
             </div>
             <div class="e-line"></div>
             <ul class="orderList">
-                <li v-for="(item,index) in orderDetail.goods_data" :key="index">
+                <li v-for="(item,index) in orderDetail.goods_data" :key="index" @click="goneProDetails(item)">
                     <img :src="base + item.goods_thumbnail" />
                     <div class="orderText">
                         <h3 v-text="item.goods_name"></h3>
@@ -106,6 +106,12 @@ export default {
                 params:{
                     order:this.orderDetail.orders_number
                 }
+            })
+        },
+        goneProDetails(item){
+            this.$router.push({
+                name:'productDetails',
+                query:{goods_id:item.goods_id}
             })
         }
         

@@ -35,8 +35,8 @@
                 <li><b>服务：</b><span><i></i>包邮</span><span><i></i>爱车屋自营</span></li>
             </ul>
             <div class="e-line"></div>
-            <router-link to="/comment" class="comment">
-                用户评论（0）
+            <router-link :to="{name:'commentList',params:{goods_id:details.goods_id}}" class="comment">
+                用户评论
                 <span>{{details.Rating}}好评<i class="fa fa-angle-right"></i></span>
             </router-link>
             <div class="e-line"></div>
@@ -176,6 +176,7 @@ export default {
             this.$ajax('/index/Goods/GoodsDetail','post',this.$sess('Condition',opt)).then(res=>{
                 let data = res.data.Data
                 this.details = data;
+                console.log(this.details)
             })
         },
 

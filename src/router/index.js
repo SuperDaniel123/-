@@ -39,7 +39,7 @@ export default new Router({
         },
         //评论
         {
-          path:'/comment',
+          path:'/comment/:goods_id',
           name:'commentList',
           component:resolve => require(['@/base/commentList'],resolve)
         },

@@ -138,7 +138,7 @@ export default {
                 content:this.commentList[index],
                 orders_id:this.discuss.orders_id
             }
-            formdata.append('portrait',this.thenImgUrl[index]);
+            formdata.append('picture',this.thenImgUrl[index]);
             formdata.append('Condition',JSON.stringify(opt));
             formdata.append('verify',JSON.stringify(this.verify));
             var config = {
@@ -151,7 +151,8 @@ export default {
                 if(data.ResultCD == 200){
                     this.$toast('保存成功')
                     setTimeout(()=>{
-                        this.$router.goBack()
+                        this.skips(1)
+                        this.$router.push('/')
                     },1000)
                     return;
                 }
