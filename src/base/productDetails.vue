@@ -16,16 +16,15 @@
             <div>
                 <p v-if="currentTime > sale_time && currentTime < sale_time_end">
                     <span>{{'距离结束时间还有：'}}</span>
-                    <b v-text="this.timerting(sale_time_end)"></b>
+                    <b v-text="timerting(1)"></b>
                 </p>
-                <p v-if="currentTime < sale_time ">
+                <p v-if="+currentTime < +sale_time ">
                     <span>{{'距离开始时间还有：'}}</span>
-                    <b v-text="this.timerting(sale_time)"></b>
+                    <b v-text="timerting(2)"></b>
                 </p>
-                <p v-if="currentTime > sale_time_end ">
+                <p v-if="+currentTime > +sale_time_end ">
                     <span>{{'抢购结束'}}</span>
                 </p>
-                
             </div>
         </span>
         <div class="prodetails">
@@ -209,8 +208,12 @@ export default {
             this.$ajax('/index/Goods/GoodsDetail','post',this.$sess('Condition',opt)).then(res=>{
                 let data = res.data.Data
                 if(data.is_flash_sale == 1){
-                    this.sale_time = new Date(data.flash_sale_time) / 1000
-                    this.sale_time_end = new Date(data.flash_sale_time_end) / 1000
+                    let end = data.flash_sale_time_end
+                    let start = data.flash_sale_time
+                    end = end.replace(/-/g,'/')
+                    start = start.replace(/-/g,'/')
+                    this.sale_time = new Date(start) / 1000
+                    this.sale_time_end = new Date(end) / 1000
                     this.timers = setInterval(()=>{
                         this.currentTime = parseInt(new Date() / 1000) 
                     },1000)
@@ -304,11 +307,17 @@ export default {
             this.show = val
         },
         //距离时间
-        timerting(disTime){
+        timerting(id){
             if(this.currentTime == ''){
                 return '00:00:00'
             }
-            let lefttime = parseInt(+disTime - +this.currentTime)
+            let lefttime;
+            if(id == 1){
+                lefttime = parseInt(this.sale_time_end - this.currentTime)
+            }
+            if(id == 2){
+                lefttime = parseInt(this.sale_time - this.currentTime)
+            }
             let h = parseInt((lefttime / 3600) % 24);
             let m = parseInt((lefttime / 60) % 60) < 10? '0'+parseInt((lefttime / 60) % 60) : parseInt((lefttime / 60) % 60)
             let s = parseInt(lefttime % 60) < 10? '0'+parseInt(lefttime % 60) : parseInt(lefttime % 60);

@@ -50,6 +50,19 @@ export default {
             handler(val,old){
                 this.priceOr()
                 this.checked = this.result.length == this.list.length? true: false;
+
+                val.forEach(element=>{
+                    if(element.is_flash_sale == 1){
+                        let startTime = element.flash_sale_time.replace(/-/g,'/')
+                        let timestamp = parseInt(new Date(startTime) / 1000) 
+                        let nowTime = parseInt(new Date() / 1000)
+                        if(nowTime < timestamp){
+                            this.flag = false;
+                        }
+                    }else{
+                        this.flag = true
+                    }
+                })
             },
             deep:true
         },
@@ -68,7 +81,8 @@ export default {
             //全选反选
             checked:false,
             //总价
-            sumPri:0
+            sumPri:0,
+            flag:true
         }
     },
     methods:{
@@ -86,8 +100,14 @@ export default {
                 this.$toast('最少选择一件商品')
                 return;
             }
+            if(this.flag == false){
+                this.$toast('商品抢购还没开始哦')
+                return
+            }
             this.order(this.result)
             this.$router.push('/payment')
+            
+            
         },
         getCartList(){
             let opt = {
