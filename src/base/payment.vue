@@ -24,12 +24,22 @@
                 <i class="fa fa-angle-right"></i>
             </div>
             <div class="ass"  v-if="address == ''" @click="goneAdd">请添加地址<i class="fa fa-angle-right"></i></div>
+            <van-cell-group>
+                <van-cell title="代金券" :value="couponInfo == 0? '请选择':couponInfo" is-link @click="show = true"/>
+            </van-cell-group>
+            <div class="ddx">
+                合计:<span>&yen;{{allPay}}</span>
+            </div>
             <div class="bottom">
                 <div class="button"  @click="confirmOrder">生成订单</div>
-                <p class="sum">合计:<span>&yen;{{this.allPay}}</span></p>
+                <p class="sum">结算:<span>&yen;{{allPay - couponInfo}}</span></p>
             </div>
         </div>
-
+        <van-popup v-model="show" position="right">
+            <div class="couponBox">
+                <div class="top"><i class="fa fa-angle-left fa-3x" @click="show = false"></i></div>
+            </div>
+        </van-popup>
     </div>
 </template>
 
@@ -61,6 +71,7 @@ export default {
             this.$router.push('/')
         }
         this.artAdd()
+        this.getCashList()
     },
     data(){
         return{
@@ -76,7 +87,11 @@ export default {
             //支付方式
             radio:'1',
             //订单数据
-            OrderData:''
+            OrderData:'',
+            //代金券
+            couponInfo:0,
+            //选择代金券开关
+            show:false
         }
     },
     methods:{
@@ -102,6 +117,23 @@ export default {
                     }
                 }
                 
+            })
+        },
+        //获取优惠券
+        getCashList(){
+            let opt ={
+                actionType:'userCouponInfo',
+                user_id:this.setMID.user_id
+            }
+            let obj = Object.assign(this.$sess('info',opt),this.$sess('verify',this.verify))
+            this.$ajax('/index/coupon/couponInfo','post',obj).then(res=>{
+                let data = res.data
+                if(data.ResultCD != 200){
+                    this.$toast(data.ErrorMsg)
+                    return;
+                }
+                console.log(data)
+                console.log(this.ComfirmOrders)
             })
         },
         confirmOrder(){
@@ -228,5 +260,20 @@ export default {
             }
         }
     }
+}
+.ddx{
+    padding-right:1rem;
+    text-align: right;
+    font-size:1rem;
+    span{
+        color:@org;
+        padding-left:0.2rem;
+        font-size:1.1rem;
+    }
+    line-height: 3rem;
+    .bottomRim;
+}
+.couponBox{
+    padding:1rem;
 }
 </style>

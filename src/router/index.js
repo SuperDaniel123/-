@@ -171,7 +171,12 @@ export default new Router({
           name:'evaluate',
           component:resolve => require(['@/base/evaluate'],resolve)
         },
-
+        //代金券 cashCoupon
+        {
+          path:'/cashCoupon',
+          name:'cashCoupon',
+          component:resolve => require(['@/base/cashCoupon'],resolve)
+        },
       ]
     },
     {

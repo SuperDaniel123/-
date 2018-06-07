@@ -27,6 +27,7 @@
         <van-cell-group>
             <van-cell title="地址管理" is-link to="/address" />
             <!-- <van-cell title="修改密码" is-link /> -->
+            <van-cell title="代金券" is-link to="/cashCoupon" />
             <van-cell v-if="setMID != ''" title="退出登录" is-link @click="logout"/>
         </van-cell-group>
     </div>
